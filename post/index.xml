@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes"?>
+<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
+  <channel>
+    <title>Posts on maximum effort</title>
+    <link>http://example.com/post/</link>
+    <description>Recent content in Posts on maximum effort</description>
+    <generator>Hugo -- gohugo.io</generator>
+    <language>en-us</language>
+    <lastBuildDate>Wed, 27 May 2020 15:16:33 +0200</lastBuildDate>
+    
+	<atom:link href="http://example.com/post/index.xml" rel="self" type="application/rss+xml" />
+    
+    
+    <item>
+      <title>Genesis block</title>
+      <link>http://example.com/post/genesis_block/</link>
+      <pubDate>Wed, 27 May 2020 15:16:33 +0200</pubDate>
+      
+      <guid>http://example.com/post/genesis_block/</guid>
+      <description>I have been attemping to blog for ove a year. Lets see if it sticks</description>
+    </item>
+    
+  </channel>
+</rss>
