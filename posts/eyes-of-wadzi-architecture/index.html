@@ -1,145 +1,19 @@
 <!doctype html><html lang=en-us><head><meta charset=utf-8><meta name=viewport content="width=device-width,initial-scale=1"><meta name=robots content="noodp"><title>Eyes of Wadzi — Architecture & Design - Tonderai Khatai</title><meta name=Description content="How I built a free, zero-maintenance photography portfolio that uses Google Drive as a CMS, Hugo for static generation, and GitHub Actions for CI/CD."><meta property="og:title" content="Eyes of Wadzi — Architecture & Design">
-<meta property="og:description" content="How I built a free, zero-maintenance photography portfolio that uses Google Drive as a CMS, Hugo for static generation, and GitHub Actions for CI/CD."><meta property="og:type" content="article"><meta property="og:url" content="https://luciandavies.github.io/posts/eyes-of-wadzi-architecture/"><meta property="article:section" content="posts"><meta property="article:published_time" content="2026-02-16T00:00:00+01:00"><meta property="article:modified_time" content="2026-02-16T00:00:00+01:00"><meta property="og:site_name" content="Tonderai Khatai"><meta name=twitter:card content="summary"><meta name=twitter:title content="Eyes of Wadzi — Architecture & Design"><meta name=twitter:description content="How I built a free, zero-maintenance photography portfolio that uses Google Drive as a CMS, Hugo for static generation, and GitHub Actions for CI/CD."><meta name=application-name content="Tonderai's blog"><meta name=apple-mobile-web-app-title content="Tonderai's blog"><meta name=theme-color content="#ffffff"><meta name=msapplication-TileColor content="#da532c"><link rel="shortcut icon" type=image/x-icon href=/favicon.ico><link rel=icon type=image/png sizes=32x32 href=/favicon-32x32.png><link rel=icon type=image/png sizes=16x16 href=/favicon-16x16.png><link rel=apple-touch-icon sizes=180x180 href=/apple-touch-icon.png><link rel=mask-icon href=/safari-pinned-tab.svg color=#5bbad5><link rel=manifest href=/site.webmanifest><link rel=canonical href=https://luciandavies.github.io/posts/eyes-of-wadzi-architecture/><link rel=next href=https://luciandavies.github.io/posts/init/><link rel=stylesheet href=https://cdn.jsdelivr.net/npm/normalize.css@8.0.1/normalize.min.css><link rel=stylesheet href=/css/style.min.css><link rel=stylesheet href=https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free@6.1.1/css/all.min.css><link rel=stylesheet href=https://cdn.jsdelivr.net/npm/animate.css@4.1.1/animate.min.css><script type=application/ld+json>{"@context":"http://schema.org","@type":"BlogPosting","headline":"Eyes of Wadzi — Architecture \u0026 Design","inLanguage":"en-us","mainEntityOfPage":{"@type":"WebPage","@id":"https:\/\/luciandavies.github.io\/posts\/eyes-of-wadzi-architecture\/"},"genre":"posts","keywords":"architecture, hugo, google-drive, github-actions, python, ci-cd","wordcount":1361,"url":"https:\/\/luciandavies.github.io\/posts\/eyes-of-wadzi-architecture\/","datePublished":"2026-02-16T00:00:00+01:00","dateModified":"2026-02-16T00:00:00+01:00","publisher":{"@type":"Organization","name":"Tonderai Khatai"},"author":{"@type":"Person","name":"Tonderai Khatai"},"description":"How I built a free, zero-maintenance photography portfolio that uses Google Drive as a CMS, Hugo for static generation, and GitHub Actions for CI/CD."}</script></head><body data-header-desktop=fixed data-header-mobile=auto><script type=text/javascript>(window.localStorage&&localStorage.getItem("theme")?localStorage.getItem("theme")==="dark":"auto"==="auto"?window.matchMedia("(prefers-color-scheme: dark)").matches:"auto"==="dark")&&document.body.setAttribute("theme","dark")</script><div id=mask></div><div class=wrapper><header class=desktop id=header-desktop><div class=header-wrapper><div class=header-title><a href=/ title="Tonderai Khatai"><span class=header-title-pre>~/</span><span id=id-1 class=typeit></span></a></div><div class=menu><div class=menu-inner><a class=menu-item href=/posts/>Posts </a><a class=menu-item href=/about/>About </a><span class="menu-item delimiter"></span><a href=javascript:void(0); class="menu-item theme-switch" title="Switch Theme">
+<meta property="og:description" content="How I built a free, zero-maintenance photography portfolio that uses Google Drive as a CMS, Hugo for static generation, and GitHub Actions for CI/CD."><meta property="og:type" content="article"><meta property="og:url" content="https://luciandavies.github.io/posts/eyes-of-wadzi-architecture/"><meta property="article:section" content="posts"><meta property="article:published_time" content="2026-02-16T00:00:00+01:00"><meta property="article:modified_time" content="2026-02-16T00:00:00+01:00"><meta property="og:site_name" content="Tonderai Khatai"><meta name=twitter:card content="summary"><meta name=twitter:title content="Eyes of Wadzi — Architecture & Design"><meta name=twitter:description content="How I built a free, zero-maintenance photography portfolio that uses Google Drive as a CMS, Hugo for static generation, and GitHub Actions for CI/CD."><meta name=application-name content="Tonderai's blog"><meta name=apple-mobile-web-app-title content="Tonderai's blog"><meta name=theme-color content="#ffffff"><meta name=msapplication-TileColor content="#da532c"><link rel="shortcut icon" type=image/x-icon href=/favicon.ico><link rel=icon type=image/png sizes=32x32 href=/favicon-32x32.png><link rel=icon type=image/png sizes=16x16 href=/favicon-16x16.png><link rel=apple-touch-icon sizes=180x180 href=/apple-touch-icon.png><link rel=mask-icon href=/safari-pinned-tab.svg color=#5bbad5><link rel=manifest href=/site.webmanifest><link rel=canonical href=https://luciandavies.github.io/posts/eyes-of-wadzi-architecture/><link rel=stylesheet href=https://cdn.jsdelivr.net/npm/normalize.css@8.0.1/normalize.min.css><link rel=stylesheet href=/css/style.min.css><link rel=stylesheet href=https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free@6.1.1/css/all.min.css><link rel=stylesheet href=https://cdn.jsdelivr.net/npm/animate.css@4.1.1/animate.min.css><script type=application/ld+json>{"@context":"http://schema.org","@type":"BlogPosting","headline":"Eyes of Wadzi — Architecture \u0026 Design","inLanguage":"en-us","mainEntityOfPage":{"@type":"WebPage","@id":"https:\/\/luciandavies.github.io\/posts\/eyes-of-wadzi-architecture\/"},"genre":"posts","keywords":"architecture, hugo, google-drive, github-actions, python, ci-cd","wordcount":1093,"url":"https:\/\/luciandavies.github.io\/posts\/eyes-of-wadzi-architecture\/","datePublished":"2026-02-16T00:00:00+01:00","dateModified":"2026-02-16T00:00:00+01:00","publisher":{"@type":"Organization","name":"Tonderai Khatai"},"author":{"@type":"Person","name":"Tonderai Khatai"},"description":"How I built a free, zero-maintenance photography portfolio that uses Google Drive as a CMS, Hugo for static generation, and GitHub Actions for CI/CD."}</script></head><body data-header-desktop=fixed data-header-mobile=auto><script type=text/javascript>(window.localStorage&&localStorage.getItem("theme")?localStorage.getItem("theme")==="dark":"auto"==="auto"?window.matchMedia("(prefers-color-scheme: dark)").matches:"auto"==="dark")&&document.body.setAttribute("theme","dark")</script><div id=mask></div><div class=wrapper><header class=desktop id=header-desktop><div class=header-wrapper><div class=header-title><a href=/ title="Tonderai Khatai"><span class=header-title-pre>~/</span><span id=id-1 class=typeit></span></a></div><div class=menu><div class=menu-inner><a class=menu-item href=/posts/>Posts </a><a class=menu-item href=/about/>About </a><span class="menu-item delimiter"></span><a href=javascript:void(0); class="menu-item theme-switch" title="Switch Theme">
 <i class="fas fa-adjust fa-fw" aria-hidden=true></i></a></div></div></div></header><header class=mobile id=header-mobile><div class=header-container><div class=header-wrapper><div class=header-title><a href=/ title="Tonderai Khatai"><span class=header-title-pre>~/</span><span id=id-2 class=typeit></span></a></div><div class=menu-toggle id=menu-toggle-mobile><span></span><span></span><span></span></div></div><div class=menu id=menu-mobile><a class=menu-item href=/posts/ title>Posts</a><a class=menu-item href=/about/ title>About</a><a href=javascript:void(0); class="menu-item theme-switch" title="Switch Theme">
 <i class="fas fa-adjust fa-fw" aria-hidden=true></i></a></div></div></header><main class=main><div class=container><div class=toc id=toc-auto><h2 class=toc-title>Contents</h2><div class=toc-content id=toc-content-auto></div></div><article class="page single"><h1 class="single-title animate__animated animate__flipInX">Eyes of Wadzi — Architecture & Design</h1><h2 class=single-subtitle>Turning Google Drive into a zero-code photography portfolio</h2><div class=post-meta><div class=post-meta-line><span class=post-author><a href=https://www.linkedin.com/in/tldkhatai/ title=Author target=_blank rel="noopener noreffer author" class=author><i class="fas fa-user-circle fa-fw" aria-hidden=true></i>Tonderai Khatai</a>
-</span>&nbsp;<span class=post-category>included in <a href=/categories/projects/><i class="far fa-folder fa-fw" aria-hidden=true></i>Projects</a></span></div><div class=post-meta-line><i class="far fa-calendar-alt fa-fw" aria-hidden=true></i>&nbsp;<time datetime=2026-02-16>2026-02-16</time>&nbsp;<i class="fas fa-pencil-alt fa-fw" aria-hidden=true></i>&nbsp;1361 words&nbsp;
-<i class="far fa-clock fa-fw" aria-hidden=true></i>&nbsp;7 minutes&nbsp;</div></div><div class="details toc" id=toc-static data-kept><div class="details-summary toc-title"><span>Contents</span>
-<span><i class="details-icon fas fa-angle-right" aria-hidden=true></i></span></div><div class="details-content toc-content" id=toc-content-static><nav id=TableOfContents><ul><li><a href=#the-problem>The Problem</a></li><li><a href=#the-solution>The Solution</a></li><li><a href=#system-architecture>System Architecture</a><ul><li><a href=#component-overview>Component Overview</a></li><li><a href=#trigger-schedule>Trigger Schedule</a></li><li><a href=#the-check-job-lightweight>The Check Job (Lightweight)</a></li><li><a href=#the-build-job-full>The Build Job (Full)</a></li><li><a href=#the-deploy-job>The Deploy Job</a></li></ul></li><li><a href=#data-flow-drive-folder-to-web-page>Data Flow: Drive Folder to Web Page</a><ul><li><a href=#filename-sanitisation>Filename Sanitisation</a></li></ul></li><li><a href=#repository-structure>Repository Structure</a></li><li><a href=#theme-architecture>Theme Architecture</a><ul><li><a href=#theme-overrides>Theme Overrides</a></li><li><a href=#image-processing-pipeline>Image Processing Pipeline</a></li></ul></li><li><a href=#security-model>Security Model</a></li><li><a href=#caching-strategy>Caching Strategy</a></li><li><a href=#secrets--configuration>Secrets & Configuration</a></li><li><a href=#cost>Cost</a></li></ul></nav></div></div><div class=content id=content><h2 id=the-problem>The Problem</h2><p>A photographer needs an online portfolio. The requirements sound simple:</p><ul><li>Upload photos from a phone or laptop</li><li>Organise them into galleries</li><li>Have them appear on a website</li><li>No terminal. No code editors. No deployment commands.</li></ul><p>Most solutions fail on at least one count. Managed platforms (Squarespace,
+</span>&nbsp;<span class=post-category>included in <a href=/categories/projects/><i class="far fa-folder fa-fw" aria-hidden=true></i>Projects</a></span></div><div class=post-meta-line><i class="far fa-calendar-alt fa-fw" aria-hidden=true></i>&nbsp;<time datetime=2026-02-16>2026-02-16</time>&nbsp;<i class="fas fa-pencil-alt fa-fw" aria-hidden=true></i>&nbsp;1093 words&nbsp;
+<i class="far fa-clock fa-fw" aria-hidden=true></i>&nbsp;6 minutes&nbsp;</div></div><div class=featured-image><img class=lazyload src=/svg/loading.min.svg data-src="https://images.unsplash.com/photo-1555066931-4365d14bab8c?w=1200&amp;q=80" data-srcset="https://images.unsplash.com/photo-1555066931-4365d14bab8c?w=1200&amp;q=80, https://images.unsplash.com/photo-1555066931-4365d14bab8c?w=1200&amp;q=80 1.5x, https://images.unsplash.com/photo-1555066931-4365d14bab8c?w=1200&amp;q=80 2x" data-sizes=auto alt="https://images.unsplash.com/photo-1555066931-4365d14bab8c?w=1200&amp;q=80" title="How I built a free, zero-maintenance photography portfolio that uses Google Drive as a CMS, Hugo for static generation, and GitHub Actions for CI/CD."></div><div class="details toc" id=toc-static data-kept><div class="details-summary toc-title"><span>Contents</span>
+<span><i class="details-icon fas fa-angle-right" aria-hidden=true></i></span></div><div class="details-content toc-content" id=toc-content-static><nav id=TableOfContents><ul><li><a href=#what-i-built>What I Built</a></li><li><a href=#how-it-works-the-short-version>How It Works (The Short Version)</a></li></ul><ul><li><a href=#the-problem>The Problem</a></li><li><a href=#the-solution>The Solution</a></li><li><a href=#system-architecture>System Architecture</a><ul><li><a href=#component-overview>Component Overview</a></li><li><a href=#trigger-schedule>Trigger Schedule</a></li><li><a href=#the-check-job-lightweight>The Check Job (Lightweight)</a></li><li><a href=#the-build-job-full>The Build Job (Full)</a></li><li><a href=#the-deploy-job>The Deploy Job</a></li></ul></li><li><a href=#data-flow-drive-folder-to-web-page>Data Flow: Drive Folder to Web Page</a><ul><li><a href=#filename-sanitisation>Filename Sanitisation</a></li></ul></li><li><a href=#repository-structure>Repository Structure</a></li><li><a href=#theme-architecture>Theme Architecture</a><ul><li><a href=#theme-overrides>Theme Overrides</a></li><li><a href=#image-processing-pipeline>Image Processing Pipeline</a></li></ul></li><li><a href=#security-model>Security Model</a></li><li><a href=#caching-strategy>Caching Strategy</a></li><li><a href=#secrets--configuration>Secrets & Configuration</a></li><li><a href=#cost>Cost</a></li></ul></nav></div></div><div class=content id=content><p>Someone close to me is a photographer. She needed a website to show her work — somewhere people could browse her photos, organised into galleries, without paying a monthly subscription.</p><p>The catch? She&rsquo;s not technical. At all. She doesn&rsquo;t want to open a terminal, learn a code editor, or think about &ldquo;deploying&rdquo; anything. She just wants to put photos in a folder and have them show up on a website.</p><p>I looked at the usual options. <strong>Squarespace</strong> and <strong>SmugMug</strong> charge monthly fees and lock you into their platform. Self-hosted galleries need a server to maintain. Static site generators like Hugo are free, but they expect you to use git and the command line to publish — a non-starter for someone who just wants to drag and drop.</p><p>The gap was clear: nothing sat between <strong>&ldquo;I just want to drag photos into a folder&rdquo;</strong> and <strong>&ldquo;here&rsquo;s your website&rdquo;</strong>.</p><h2 id=what-i-built>What I Built</h2><p>The answer turned out to be something she already uses every day: <strong>Google Drive</strong>.</p><p>She creates folders in Drive — one per gallery — and drops photos into them. That&rsquo;s it. That&rsquo;s her entire workflow. Behind the scenes, an automated pipeline checks Drive for changes every few minutes, downloads any new or updated photos, builds a website from them, and publishes it. She never touches code, never opens a terminal, and never runs a deploy command.</p><p>The website is completely free to host, loads fast, and looks good on any device. The whole thing costs exactly nothing to run.</p><h2 id=how-it-works-the-short-version>How It Works (The Short Version)</h2><ol><li>She organises photos into folders on Google Drive</li><li>Every few minutes, a scheduled job checks if anything changed</li><li>If it did, the pipeline downloads the photos, generates the site, and publishes it</li><li>The website updates itself — no human intervention needed</li></ol><p>If you&rsquo;re curious about the nuts and bolts, the rest of this post goes deep into the architecture and technical decisions. If you&rsquo;re not, the summary above is really all there is to it.</p><hr><h1 id=technical-deep-dive>Technical Deep-Dive</h1><h2 id=the-problem>The Problem</h2><p>A photographer needs an online portfolio. The requirements sound simple:</p><ul><li>Upload photos from a phone or laptop</li><li>Organise them into galleries</li><li>Have them appear on a website</li><li>No terminal. No code editors. No deployment commands.</li></ul><p>Most solutions fail on at least one count. Managed platforms (Squarespace,
 SmugMug) cost money and lock you in. Self-hosted galleries need a server. Static
 site generators need technical knowledge to publish. The gap is between <strong>&ldquo;I just
 want to drag photos into a folder&rdquo;</strong> and <strong>&ldquo;here&rsquo;s your website&rdquo;</strong>.</p><h2 id=the-solution>The Solution</h2><p>Google Drive becomes the CMS. The photographer manages folders and photos in
-Drive &ndash; a tool she already uses daily. A scheduled pipeline detects changes,
+Drive — a tool she already uses daily. A scheduled pipeline detects changes,
 downloads the images, generates the site, and deploys it. Zero interaction
-with code, git, or the command line.</p><pre tabindex=0><code> PHOTOGRAPHER&#39;S WORKFLOW            AUTOMATED PIPELINE
- ======================            ==================
-
- +----------------+
- |  Google Drive   |   Folders = galleries
- |                 |   Photos  = gallery items
- |  /galleries/    |   File descriptions = captions
- |    /spain/      |   Folder descriptions = body text
- |      img1.jpg   |
- |      img2.jpg   |
- |    /landscapes/  |
- |      ...        |
- +--------+--------+
-          |
-          | Google Drive API (read-only)
-          v
- +--------+--------+
- |  sync_drive.py   |   Download images
- |                 |   Generate index.md per gallery
- |                 |   Generate _index.md for listing
- +--------+--------+
-          |
-          | content/galleries/ (generated)
-          v
- +--------+--------+
- |  Hugo            |   Static site generator
- |                 |   Responsive image processing
- |                 |   Gallery theme (Pig.js layout)
- +--------+--------+
-          |
-          | public/ (static HTML + images)
-          v
- +--------+--------+
- |  GitHub Pages    |   CDN-backed hosting
- |                 |   HTTPS by default
- |                 |   Free
- +-----------------+
-</code></pre><h2 id=system-architecture>System Architecture</h2><h3 id=component-overview>Component Overview</h3><pre tabindex=0><code>+------------------------------------------------------------------+
-|                     GitHub Actions Workflow                        |
-|                                                                    |
-|  +----------+     +----------+     +---------+     +----------+   |
-|  |  check   |----&gt;|  build   |----&gt;| deploy  |----&gt;| GitHub   |   |
-|  |  (fast)  |     |  (full)  |     |         |     | Pages    |   |
-|  +----------+     +----------+     +---------+     +----------+   |
-|   Scheduled        On change        Always if                      |
-|   only             or push          build OK                       |
-+------------------------------------------------------------------+
-
-Triggers:
-  - push to main        --&gt; skip check, always build + deploy
-  - cron (every 5 min)  --&gt; check first, build only if Drive changed
-  - manual dispatch     --&gt; skip check, always build + deploy
-</code></pre><h3 id=trigger-schedule>Trigger Schedule</h3><p>The cron schedule targets the hours the photographer is most likely editing:</p><pre tabindex=0><code>UTC Hour:  06  07  08  09  ...  19  20  21  22
-Local:     07  08  09  10  ...  20  21  22  23
-            |---|---|---|         |---|---|---|
-            Morning window       Evening window
-            (every 5 min)        (every 5 min)
-</code></pre><p>Outside these windows, only pushes or manual triggers cause builds.</p><h3 id=the-check-job-lightweight>The Check Job (Lightweight)</h3><p>Runs on schedule only. Purpose: avoid full builds when nothing changed.</p><pre tabindex=0><code>check_drive_changes.py
-======================
-
-  Read last_sync.txt from cache
-         |
-         v
-  +-- Has timestamp? --+
-  |                     |
-  No                   Yes
-  |                     |
-  v                     v
-  &#34;Changed&#34;       Query Drive API:
-  (first run)     &#34;files modified after {timestamp}?&#34;
-                        |
-                  +-----+-----+
-                  |           |
-                 Yes          No
-                  |           |
-                  v           v
-              &#34;Changed&#34;   &#34;No changes&#34;
-              (build)     (skip build)
-</code></pre><p>The timestamp is persisted between runs via GitHub Actions cache.</p><h3 id=the-build-job-full>The Build Job (Full)</h3><pre tabindex=0><code>  Install Hugo + Dart Sass
-         |
-         v
-  Checkout repo
-         |
-         v
-  sync_drive.py          &lt;-- Downloads ALL images from Drive
-  |                          Generates content/galleries/
-  |  For each subfolder:
-  |    1. Create gallery dir
-  |    2. Download images (sanitise filenames)
-  |    3. Generate index.md with front matter
-  |  Generate _index.md (gallery listing)
-         |
-         v
-  Save sync timestamp    &lt;-- For next check job
-         |
-         v
-  Hugo build              &lt;-- Processes images (thumbnails, srcsets)
-  |                           Renders HTML from theme
-  |                           Minifies output
-         |
-         v
-  Upload artifact         &lt;-- Static files in public/
-</code></pre><h3 id=the-deploy-job>The Deploy Job</h3><p>Deploys the artifact to GitHub Pages. Runs if and only if the build
+with code, git, or the command line.</p><img src=pipeline-overview.svg alt="Pipeline overview — from Google Drive to GitHub Pages" style=width:100%;max-width:720px><h2 id=system-architecture>System Architecture</h2><h3 id=component-overview>Component Overview</h3><img src=github-actions-workflow.svg alt="GitHub Actions workflow — check, build, deploy pipeline" style=width:100%;max-width:720px><h3 id=trigger-schedule>Trigger Schedule</h3><p>The cron schedule targets the hours the photographer is most likely editing:</p><img src=trigger-schedule.svg alt="Trigger schedule — morning and evening windows" style=width:100%;max-width:640px><h3 id=the-check-job-lightweight>The Check Job (Lightweight)</h3><p>Runs on schedule only. Purpose: avoid full builds when nothing changed.</p><img src=check-job-flowchart.svg alt="Check job flowchart — lightweight change detection" style=width:100%;max-width:560px><p>The timestamp is persisted between runs via GitHub Actions cache.</p><h3 id=the-build-job-full>The Build Job (Full)</h3><img src=build-job-steps.svg alt="Build job steps — from install to artifact upload" style=width:100%;max-width:560px><h3 id=the-deploy-job>The Deploy Job</h3><p>Deploys the artifact to GitHub Pages. Runs if and only if the build
 job succeeded. Uses <code>always()</code> condition to handle the case where the
-check job was skipped (push/manual triggers).</p><h2 id=data-flow-drive-folder-to-web-page>Data Flow: Drive Folder to Web Page</h2><pre tabindex=0><code>Google Drive                    Generated Files                  Website
-============                    ===============                  =======
-
-Folder: &#34;spain&#34;                 content/galleries/spain/
-  name: &#34;spain&#34;          ---&gt;     index.md:
-  description: &#34;Photos          ---
-    from Barcelona&#34;               title: Spain
-  created: 2026-02-14             date: 2026-02-14
-                                  resources:
-  File: &#34;sunset.jpg&#34;              - src: sunset.jpg
-    desc: &#34;Beach sunset&#34;  ---&gt;      title: &#34;Beach sunset&#34;      [lightbox
-  File: &#34;market.jpg&#34;              - src: market.jpg             caption]
-    desc: &#34;&#34;              ---&gt;    ---
-                                                                /galleries/
-                                  Photos from Barcelona         spain/
-                                                                  |
-                                                                  +-- grid of
-                                                                      responsive
-                                                                      thumbnails
-</code></pre><h3 id=filename-sanitisation>Filename Sanitisation</h3><p>Drive filenames can contain spaces, uppercase, and special characters
-(<code>Copy of Copy of IMG-20241116-WA0011.jpg</code>). The sync script normalises them:</p><pre tabindex=0><code>Original (Drive)                      Saved as
-================                      ========
-Copy of Copy of IMG-20241116.jpg  --&gt; copy-of-copy-of-img-20241116.jpg
-My Photo (2).JPG                  --&gt; my-photo-(2).jpg
-sunset.jpg                        --&gt; sunset.jpg
-</code></pre><p>Rule: lowercase, spaces to hyphens. This prevents URL encoding issues and
+check job was skipped (push/manual triggers).</p><h2 id=data-flow-drive-folder-to-web-page>Data Flow: Drive Folder to Web Page</h2><img src=data-flow.svg alt="Data flow — from Drive folder to web page" style=width:100%;max-width:780px><h3 id=filename-sanitisation>Filename Sanitisation</h3><p>Drive filenames can contain spaces, uppercase, and special characters
+(<code>Copy of Copy of IMG-20241116-WA0011.jpg</code>). The sync script normalises them:</p><table><thead><tr><th>Original (Drive)</th><th>Saved as</th></tr></thead><tbody><tr><td><code>Copy of Copy of IMG-20241116.jpg</code></td><td><code>copy-of-copy-of-img-20241116.jpg</code></td></tr><tr><td><code>My Photo (2).JPG</code></td><td><code>my-photo-(2).jpg</code></td></tr><tr><td><code>sunset.jpg</code></td><td><code>sunset.jpg</code></td></tr></tbody></table><p>Rule: lowercase, spaces to hyphens. This prevents URL encoding issues and
 keeps Hugo&rsquo;s image processing happy.</p><h2 id=repository-structure>Repository Structure</h2><pre tabindex=0><code>eyes-of-wadzi/
 |
 +-- .github/workflows/
@@ -176,60 +50,8 @@ keeps Hugo&rsquo;s image processing happy.</p><h2 id=repository-structure>Reposi
 </code></pre><p><strong>Key point:</strong> <code>content/galleries/</code> does not exist in git. It is entirely
 generated at build time from Google Drive. The <code>.gitignore</code> ensures it is
 never accidentally committed.</p><h2 id=theme-architecture>Theme Architecture</h2><p>The site uses the <a href=https://github.com/bep/galleriesdeluxe target=_blank rel="noopener noreffer">Galleries Deluxe</a>
-Hugo theme, imported as a Hugo Module (not a git submodule).</p><pre tabindex=0><code>Theme module chain:
-  galleriesdeluxe (multi-gallery wrapper)
-    +-- gallerydeluxe (single gallery renderer, Pig.js grid)
-    +-- hugo-mod-misc/common-partials (SEO, Open Graph)
-</code></pre><h3 id=theme-overrides>Theme Overrides</h3><p>The project overrides specific theme files to add caption support:</p><pre tabindex=0><code>THEME FILE                              OVERRIDE PURPOSE
-==========                              ================
-partials/gallerydeluxe/init.html        Add &#34;title&#34; field to image JSON
-                                        so captions are available in JS
-
-partials/galleriesdeluxe/header.html    Show flat gallery list in nav
-                                        instead of category hierarchy
-
-js/gallerydeluxe/src/index.js           Display caption in lightbox when
-                                        image title differs from filename
-
-scss/galleriesdeluxe/vars-custom.scss   Style the caption overlay
-</code></pre><h3 id=image-processing-pipeline>Image Processing Pipeline</h3><p>Hugo processes each source image into multiple sizes for responsive loading:</p><pre tabindex=0><code>sunset.jpg (original, e.g. 4000x3000)
-  |
-  +-- 20px wide   (blurred placeholder, inline base64)
-  +-- 100px wide  (tiny thumbnail)
-  +-- 250px wide  (small thumbnail)
-  +-- 500px wide  (medium, grid view)
-  +-- full size   (lightbox view)
-</code></pre><p>These are referenced in a JSON manifest that Pig.js uses to build the
-justified grid layout.</p><h2 id=security-model>Security Model</h2><pre tabindex=0><code>+---------------------+     read-only      +------------------+
-| Service Account     |&lt;------------------&gt;| Google Drive     |
-| (no human login)    |  drive.readonly    | Shared Folder    |
-+---------------------+  scope only        +------------------+
-         |
-         | JSON key stored as
-         | GitHub Actions secret
-         v
-+---------------------+
-| GitHub Actions      |  Secrets are:
-| (ephemeral runner)  |  - encrypted at rest
-|                     |  - masked in logs
-|                     |  - scoped to repo
-+---------------------+
-         |
-         | Static files only
-         v
-+---------------------+
-| GitHub Pages        |  No server-side code
-| (CDN)               |  No database
-|                     |  No authentication surface
-+---------------------+
-</code></pre><p><strong>Key security properties:</strong></p><ul><li>Service account has <strong>read-only</strong> access to one shared folder</li><li>No human credentials in the pipeline</li><li>Credentials passed via environment variable, never written to disk in CI</li><li>The deployed site is fully static &ndash; no server, no API, no attack surface</li><li>GitHub Pages provides HTTPS by default</li></ul><h2 id=caching-strategy>Caching Strategy</h2><p>Four caches reduce build time and API usage:</p><pre tabindex=0><code>CACHE                   KEY                        PURPOSE
-=====                   ===                        =======
-pip packages            requirements.txt hash      Skip pip install (~5s saved)
-Hugo modules            go.sum hash                Skip module download (~6s saved)
-Hugo image cache        Built-in (4320h TTL)       Skip image reprocessing
-Sync timestamp          &#34;drive-sync-timestamp&#34;     Skip builds when Drive unchanged
-</code></pre><p>The sync timestamp cache is the most impactful: it turns a ~40s build into
+Hugo theme, imported as a Hugo Module (not a git submodule).</p><table><thead><tr><th>Module</th><th>Role</th></tr></thead><tbody><tr><td><strong>galleriesdeluxe</strong></td><td>Multi-gallery wrapper</td></tr><tr><td> gallerydeluxe</td><td>Single gallery renderer, Pig.js grid</td></tr><tr><td> hugo-mod-misc/common-partials</td><td>SEO, Open Graph</td></tr></tbody></table><h3 id=theme-overrides>Theme Overrides</h3><p>The project overrides specific theme files to add caption support:</p><table><thead><tr><th>Theme File</th><th>Override Purpose</th></tr></thead><tbody><tr><td><code>partials/gallerydeluxe/init.html</code></td><td>Add &ldquo;title&rdquo; field to image JSON so captions are available in JS</td></tr><tr><td><code>partials/galleriesdeluxe/header.html</code></td><td>Show flat gallery list in nav instead of category hierarchy</td></tr><tr><td><code>js/gallerydeluxe/src/index.js</code></td><td>Display caption in lightbox when image title differs from filename</td></tr><tr><td><code>scss/galleriesdeluxe/vars-custom.scss</code></td><td>Style the caption overlay</td></tr></tbody></table><h3 id=image-processing-pipeline>Image Processing Pipeline</h3><p>Hugo processes each source image into multiple sizes for responsive loading:</p><img src=image-processing.svg alt="Image processing pipeline — responsive sizes from source" style=width:100%;max-width:480px><h2 id=security-model>Security Model</h2><img src=security-model.svg alt="Security model — service account to GitHub Pages" style=width:100%;max-width:600px><p><strong>Key security properties:</strong></p><ul><li>Service account has <strong>read-only</strong> access to one shared folder</li><li>No human credentials in the pipeline</li><li>Credentials passed via environment variable, never written to disk in CI</li><li>The deployed site is fully static &ndash; no server, no API, no attack surface</li><li>GitHub Pages provides HTTPS by default</li></ul><h2 id=caching-strategy>Caching Strategy</h2><p>Four caches reduce build time and API usage:</p><table><thead><tr><th>Cache</th><th>Key</th><th>Purpose</th></tr></thead><tbody><tr><td>pip packages</td><td><code>requirements.txt</code> hash</td><td>Skip pip install (~5s saved)</td></tr><tr><td>Hugo modules</td><td><code>go.sum</code> hash</td><td>Skip module download (~6s saved)</td></tr><tr><td>Hugo image cache</td><td>Built-in (4320h TTL)</td><td>Skip image reprocessing</td></tr><tr><td>Sync timestamp</td><td><code>drive-sync-timestamp</code></td><td>Skip builds when Drive unchanged</td></tr></tbody></table><p>The sync timestamp cache is the most impactful: it turns a ~40s build into
 a ~10s no-op check on every 5-minute cron run when nothing has changed.</p><h2 id=secrets--configuration>Secrets & Configuration</h2><p>Two GitHub Actions secrets are required:</p><table><thead><tr><th>Secret</th><th>Content</th></tr></thead><tbody><tr><td><code>GOOGLE_CREDENTIALS_FILE</code></td><td>Full JSON of service account key</td></tr><tr><td><code>GOOGLE_DRIVE_FOLDER_ID</code></td><td>ID of the shared Drive folder</td></tr></tbody></table><p>The folder ID comes from the Drive URL:
 <code>https://drive.google.com/drive/folders/&lt;THIS_PART></code></p><h2 id=cost>Cost</h2><p>Everything in this stack is free:</p><table><thead><tr><th>Component</th><th>Cost</th><th>Limits</th></tr></thead><tbody><tr><td>Google Drive</td><td>Free</td><td>15 GB storage</td></tr><tr><td>Google Drive API</td><td>Free</td><td>20,000 queries/day</td></tr><tr><td>GitHub Actions</td><td>Free</td><td>2,000 min/month (public repos)</td></tr><tr><td>GitHub Pages</td><td>Free</td><td>1 GB site size, 100 GB bandwidth/mo</td></tr><tr><td>Hugo</td><td>Free</td><td>Open source</td></tr></tbody></table><p>At ~10s per check and 5-minute intervals over 7 hours/day, scheduled runs
-consume roughly <strong>7 x 12 x 10s / 60 = ~14 minutes/day</strong> of Actions time.</p></div><div class=post-footer id=post-footer><div class=post-info><div class=post-info-line><div class=post-info-mod><span>Updated on 2026-02-16</span></div></div><div class=post-info-line><div class=post-info-md></div><div class=post-info-share><span></span></div></div></div><div class=post-info-more><section class=post-tags><i class="fas fa-tags fa-fw" aria-hidden=true></i>&nbsp;<a href=/tags/architecture/>Architecture</a>,&nbsp;<a href=/tags/hugo/>Hugo</a>,&nbsp;<a href=/tags/google-drive/>Google-Drive</a>,&nbsp;<a href=/tags/github-actions/>Github-Actions</a>,&nbsp;<a href=/tags/python/>Python</a>,&nbsp;<a href=/tags/ci-cd/>Ci-Cd</a></section><section><span><a href=javascript:void(0); onclick=window.history.back()>Back</a></span>&nbsp;|&nbsp;<span><a href=/>Home</a></span></section></div><div class=post-nav><a href=/posts/init/ class=next rel=next title="Basic Markdown Syntax">Basic Markdown Syntax<i class="fas fa-angle-right fa-fw" aria-hidden=true></i></a></div></div></article></div></main><footer class=footer><div class=footer-container><div class=footer-line>Powered by <a href=https://gohugo.io/ target=_blank rel="noopener noreffer" title="Hugo 0.123.8">Hugo</a> | Theme - <a href=https://github.com/dillonzq/LoveIt target=_blank rel="noopener noreffer" title="LoveIt 0.2.10"><i class="far fa-kiss-wink-heart fa-fw" aria-hidden=true></i> LoveIt</a></div><div class=footer-line itemscope itemtype=http://schema.org/CreativeWork><i class="far fa-copyright fa-fw" aria-hidden=true></i><span itemprop=copyrightYear>2023 - 2026</span><span class=author itemprop=copyrightHolder>&nbsp;<a href=/ target=_blank></a></span>&nbsp;|&nbsp;<span class=license>©2023 Tonderai Khatai</span></div></div></footer></div><div id=fixed-buttons><a href=# id=back-to-top class=fixed-button title="Back to Top"><i class="fas fa-arrow-up fa-fw" aria-hidden=true></i>
+consume roughly <strong>7 x 12 x 10s / 60 = ~14 minutes/day</strong> of Actions time.</p></div><div class=post-footer id=post-footer><div class=post-info><div class=post-info-line><div class=post-info-mod><span>Updated on 2026-02-16</span></div></div><div class=post-info-line><div class=post-info-md></div><div class=post-info-share><span></span></div></div></div><div class=post-info-more><section class=post-tags><i class="fas fa-tags fa-fw" aria-hidden=true></i>&nbsp;<a href=/tags/architecture/>Architecture</a>,&nbsp;<a href=/tags/hugo/>Hugo</a>,&nbsp;<a href=/tags/google-drive/>Google-Drive</a>,&nbsp;<a href=/tags/github-actions/>Github-Actions</a>,&nbsp;<a href=/tags/python/>Python</a>,&nbsp;<a href=/tags/ci-cd/>Ci-Cd</a></section><section><span><a href=javascript:void(0); onclick=window.history.back()>Back</a></span>&nbsp;|&nbsp;<span><a href=/>Home</a></span></section></div><div class=post-nav></div></div></article></div></main><footer class=footer><div class=footer-container><div class=footer-line>Powered by <a href=https://gohugo.io/ target=_blank rel="noopener noreffer" title="Hugo 0.123.8">Hugo</a> | Theme - <a href=https://github.com/dillonzq/LoveIt target=_blank rel="noopener noreffer" title="LoveIt 0.2.10"><i class="far fa-kiss-wink-heart fa-fw" aria-hidden=true></i> LoveIt</a></div><div class=footer-line itemscope itemtype=http://schema.org/CreativeWork><i class="far fa-copyright fa-fw" aria-hidden=true></i><span itemprop=copyrightYear>2023 - 2026</span><span class=author itemprop=copyrightHolder>&nbsp;<a href=/ target=_blank></a></span>&nbsp;|&nbsp;<span class=license>©2023 Tonderai Khatai</span></div></div></footer></div><div id=fixed-buttons><a href=# id=back-to-top class=fixed-button title="Back to Top"><i class="fas fa-arrow-up fa-fw" aria-hidden=true></i>
 </a><a href=# id=view-comments class=fixed-button title="View Comments"><i class="fas fa-comment fa-fw" aria-hidden=true></i></a></div><link rel=stylesheet href=https://cdn.jsdelivr.net/npm/cookieconsent@3.1.1/build/cookieconsent.min.css><script type=text/javascript src=https://cdn.jsdelivr.net/npm/lazysizes@5.3.1/lazysizes.min.js></script><script type=text/javascript src=https://cdn.jsdelivr.net/npm/clipboard@2.0.11/dist/clipboard.min.js></script><script type=text/javascript src=https://cdn.jsdelivr.net/npm/typeit@8.5.4/dist/index.umd.js></script><script type=text/javascript src=https://cdn.jsdelivr.net/npm/cookieconsent@3.1.1/build/cookieconsent.min.js></script><script type=text/javascript>window.config={code:{copyTitle:"Copy to clipboard",maxShownLines:50},comment:{},cookieconsent:{content:{dismiss:"Got it!",link:"Learn more",message:"This website uses Cookies to improve your experience."},enable:!0,palette:{button:{background:"#f0f0f0"},popup:{background:"#1aa3ff"}},theme:"edgeless"},data:{"id-1":"tldk","id-2":"tldk"},typeit:{cursorChar:"|",cursorSpeed:1e3,data:{"id-1":["id-1"],"id-2":["id-2"]},duration:-1,speed:100}}</script><script type=text/javascript src=/js/theme.min.js></script><script type=text/javascript>window.dataLayer=window.dataLayer||[];function gtag(){dataLayer.push(arguments)}gtag("js",new Date),gtag("config","G-DBZKMGWM2M",{anonymize_ip:!0})</script><script type=text/javascript src="https://www.googletagmanager.com/gtag/js?id=G-DBZKMGWM2M" async></script></body></html>

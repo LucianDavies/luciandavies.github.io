@@ -1,0 +1,66 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 780 320" font-family="'SF Mono','Fira Code','Cascadia Code',monospace" font-size="12">
+  <style>
+    .box { fill:#1e1e2e; stroke:#89b4fa; stroke-width:1.5; rx:8; }
+    .label { fill:#cdd6f4; dominant-baseline:central; }
+    .label-c { fill:#cdd6f4; text-anchor:middle; dominant-baseline:central; }
+    .note { fill:#a6adc8; font-size:11; }
+    .heading { fill:#f9e2af; font-size:13; font-weight:bold; text-anchor:middle; }
+    .arrow { stroke:#89b4fa; stroke-width:1.5; fill:none; marker-end:url(#ah4); }
+    .code { fill:#a6e3a1; font-size:11; }
+  </style>
+  <defs>
+    <marker id="ah4" markerWidth="8" markerHeight="6" refX="8" refY="3" orient="auto">
+      <polygon points="0 0, 8 3, 0 6" fill="#89b4fa"/>
+    </marker>
+  </defs>
+  <rect width="780" height="320" fill="#181825" rx="12"/>
+
+  <!-- Column headers -->
+  <text x="120" y="28" class="heading">Google Drive</text>
+  <text x="400" y="28" class="heading">Generated Files</text>
+  <text x="670" y="28" class="heading">Website</text>
+
+  <!-- Google Drive column -->
+  <rect x="30" y="48" width="185" height="240" class="box"/>
+  <text x="50" y="72" class="label" font-weight="bold">Folder: "spain"</text>
+  <text x="50" y="96" class="note">name: "spain"</text>
+  <text x="50" y="116" class="note">description: "Photos</text>
+  <text x="50" y="132" class="note">  from Barcelona"</text>
+  <text x="50" y="156" class="note">created: 2026-02-14</text>
+  <line x1="50" y1="172" x2="195" y2="172" stroke="#585b70" stroke-width="0.5"/>
+  <text x="50" y="196" class="note">File: "sunset.jpg"</text>
+  <text x="50" y="216" class="note">  desc: "Beach sunset"</text>
+  <text x="50" y="244" class="note">File: "market.jpg"</text>
+  <text x="50" y="264" class="note">  desc: ""</text>
+
+  <!-- Arrows -->
+  <line x1="215" y1="100" x2="275" y2="100" class="arrow"/>
+  <line x1="215" y1="206" x2="275" y2="206" class="arrow"/>
+  <line x1="215" y1="250" x2="275" y2="250" class="arrow"/>
+
+  <!-- Generated Files column -->
+  <rect x="280" y="48" width="220" height="240" class="box"/>
+  <text x="300" y="72" class="code">content/galleries/spain/</text>
+  <text x="300" y="92" class="code">  index.md:</text>
+  <text x="300" y="112" class="note">---</text>
+  <text x="300" y="132" class="note">title: Spain</text>
+  <text x="300" y="152" class="note">date: 2026-02-14</text>
+  <text x="300" y="172" class="note">resources:</text>
+  <text x="300" y="192" class="note">  - src: sunset.jpg</text>
+  <text x="300" y="208" class="note">    title: "Beach sunset"</text>
+  <text x="300" y="228" class="note">  - src: market.jpg</text>
+  <text x="300" y="244" class="note">---</text>
+  <text x="300" y="268" class="note">Photos from Barcelona</text>
+
+  <!-- Arrow to website -->
+  <line x1="500" y1="168" x2="570" y2="168" class="arrow"/>
+
+  <!-- Website column -->
+  <rect x="575" y="48" width="180" height="240" class="box" style="stroke:#a6e3a1;"/>
+  <text x="665" y="72" class="label-c" fill="#a6e3a1">/galleries/spain/</text>
+  <text x="665" y="120" class="note" text-anchor="middle">Grid of responsive</text>
+  <text x="665" y="140" class="note" text-anchor="middle">thumbnails</text>
+  <text x="665" y="180" class="note" text-anchor="middle">"Beach sunset"</text>
+  <text x="665" y="200" class="note" text-anchor="middle">shown as lightbox</text>
+  <text x="665" y="220" class="note" text-anchor="middle">caption</text>
+</svg>
