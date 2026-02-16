@@ -4,6 +4,11 @@ title = "Tonderai Khatai"
 theme = ["github.com/dillonzq/LoveIt"]
 enableRobotsTXT = true
 
+[markup]
+  [markup.goldmark]
+    [markup.goldmark.renderer]
+      unsafe = true
+
 [module]
 [module.hugoVersion]
 extended = true

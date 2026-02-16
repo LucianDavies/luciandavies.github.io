@@ -72,31 +72,31 @@ Drive — a tool she already uses daily. A scheduled pipeline detects changes,
 downloads the images, generates the site, and deploys it. Zero interaction
 with code, git, or the command line.
 
-![Pipeline overview — from Google Drive to GitHub Pages](pipeline-overview.svg "Pipeline Overview")
+<img src="pipeline-overview.svg" alt="Pipeline overview — from Google Drive to GitHub Pages" style="width:100%;max-width:720px;">
 
 ## System Architecture
 
 ### Component Overview
 
-![GitHub Actions workflow — check, build, deploy pipeline](github-actions-workflow.svg "GitHub Actions Workflow")
+<img src="github-actions-workflow.svg" alt="GitHub Actions workflow — check, build, deploy pipeline" style="width:100%;max-width:720px;">
 
 ### Trigger Schedule
 
 The cron schedule targets the hours the photographer is most likely editing:
 
-![Trigger schedule — morning and evening windows](trigger-schedule.svg "Trigger Schedule")
+<img src="trigger-schedule.svg" alt="Trigger schedule — morning and evening windows" style="width:100%;max-width:640px;">
 
 ### The Check Job (Lightweight)
 
 Runs on schedule only. Purpose: avoid full builds when nothing changed.
 
-![Check job flowchart — lightweight change detection](check-job-flowchart.svg "Check Job Flowchart")
+<img src="check-job-flowchart.svg" alt="Check job flowchart — lightweight change detection" style="width:100%;max-width:560px;">
 
 The timestamp is persisted between runs via GitHub Actions cache.
 
 ### The Build Job (Full)
 
-![Build job steps — from install to artifact upload](build-job-steps.svg "Build Job Steps")
+<img src="build-job-steps.svg" alt="Build job steps — from install to artifact upload" style="width:100%;max-width:560px;">
 
 ### The Deploy Job
 
@@ -106,7 +106,7 @@ check job was skipped (push/manual triggers).
 
 ## Data Flow: Drive Folder to Web Page
 
-![Data flow — from Drive folder to web page](data-flow.svg "Data Flow")
+<img src="data-flow.svg" alt="Data flow — from Drive folder to web page" style="width:100%;max-width:780px;">
 
 ### Filename Sanitisation
 
@@ -190,11 +190,11 @@ The project overrides specific theme files to add caption support:
 
 Hugo processes each source image into multiple sizes for responsive loading:
 
-![Image processing pipeline — responsive sizes from source](image-processing.svg "Image Processing Pipeline")
+<img src="image-processing.svg" alt="Image processing pipeline — responsive sizes from source" style="width:100%;max-width:480px;">
 
 ## Security Model
 
-![Security model — service account to GitHub Pages](security-model.svg "Security Model")
+<img src="security-model.svg" alt="Security model — service account to GitHub Pages" style="width:100%;max-width:600px;">
 
 **Key security properties:**
 - Service account has **read-only** access to one shared folder
