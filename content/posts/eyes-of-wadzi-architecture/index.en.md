@@ -1,6 +1,6 @@
 ---
-title: "Eyes of Wadzi — Architecture & Design"
-subtitle: "Turning Google Drive into a zero-code photography portfolio"
+title: "Building a Zero-Code Photography Portfolio"
+subtitle: "Google Drive as a CMS, Hugo for the site, GitHub Actions for the rest"
 date: 2026-02-16T00:00:00+01:00
 lastmod: 2026-02-16T00:00:00+01:00
 draft: false
@@ -13,8 +13,8 @@ images: []
 tags: ["architecture", "hugo", "google-drive", "github-actions", "python", "ci-cd"]
 categories: ["projects"]
 
-featuredImage: "https://images.unsplash.com/photo-1555066931-4365d14bab8c?w=1200&q=80"
-featuredImagePreview: "https://images.unsplash.com/photo-1555066931-4365d14bab8c?w=600&q=80"
+featuredImage: "https://images.unsplash.com/photo-1452587925148-ce544e77e70d?w=1200&q=80"
+featuredImagePreview: "https://images.unsplash.com/photo-1452587925148-ce544e77e70d?w=600&q=80"
 
 hiddenFromHomePage: false
 hiddenFromSearch: false
