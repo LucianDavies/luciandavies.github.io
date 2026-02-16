@@ -1,0 +1,59 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 720 260" font-family="'SF Mono','Fira Code','Cascadia Code',monospace" font-size="13">
+  <style>
+    .box { fill:#1e1e2e; stroke:#89b4fa; stroke-width:1.5; rx:8; }
+    .outer { fill:none; stroke:#585b70; stroke-width:1.5; rx:10; stroke-dasharray:6,3; }
+    .label { fill:#cdd6f4; text-anchor:middle; dominant-baseline:central; }
+    .note { fill:#a6adc8; font-size:11; text-anchor:middle; }
+    .arrow { stroke:#89b4fa; stroke-width:1.5; fill:none; marker-end:url(#ah); }
+    .trigger { fill:#f9e2af; font-size:11; }
+  </style>
+  <defs>
+    <marker id="ah" markerWidth="8" markerHeight="6" refX="8" refY="3" orient="auto">
+      <polygon points="0 0, 8 3, 0 6" fill="#89b4fa"/>
+    </marker>
+  </defs>
+  <rect width="720" height="260" fill="#181825" rx="12"/>
+
+  <!-- Outer workflow box -->
+  <rect x="30" y="20" width="660" height="130" class="outer"/>
+  <text x="360" y="42" class="label" font-size="12" fill="#585b70">GitHub Actions Workflow</text>
+
+  <!-- check box -->
+  <rect x="60" y="60" width="120" height="60" class="box"/>
+  <text x="120" y="84" class="label" font-weight="bold">check</text>
+  <text x="120" y="104" class="note">(fast)</text>
+
+  <!-- Arrow -->
+  <line x1="180" y1="90" x2="230" y2="90" class="arrow"/>
+
+  <!-- build box -->
+  <rect x="235" y="60" width="120" height="60" class="box"/>
+  <text x="295" y="84" class="label" font-weight="bold">build</text>
+  <text x="295" y="104" class="note">(full)</text>
+
+  <!-- Arrow -->
+  <line x1="355" y1="90" x2="405" y2="90" class="arrow"/>
+
+  <!-- deploy box -->
+  <rect x="410" y="60" width="120" height="60" class="box"/>
+  <text x="470" y="84" class="label" font-weight="bold">deploy</text>
+
+  <!-- Arrow -->
+  <line x1="530" y1="90" x2="570" y2="90" class="arrow"/>
+
+  <!-- GitHub Pages box -->
+  <rect x="575" y="60" width="100" height="60" class="box" style="stroke:#a6e3a1;"/>
+  <text x="625" y="84" class="label" font-weight="bold" fill="#a6e3a1">GitHub</text>
+  <text x="625" y="104" class="label" fill="#a6e3a1">Pages</text>
+
+  <!-- Sub-labels -->
+  <text x="120" y="138" class="note">Scheduled only</text>
+  <text x="295" y="138" class="note">On change or push</text>
+  <text x="470" y="138" class="note">Always if build OK</text>
+
+  <!-- Triggers -->
+  <text x="60" y="178" class="trigger">Triggers:</text>
+  <text x="60" y="196" class="trigger">  push to main → skip check, always build + deploy</text>
+  <text x="60" y="214" class="trigger">  cron (every 5 min) → check first, build only if Drive changed</text>
+  <text x="60" y="232" class="trigger">  manual dispatch → skip check, always build + deploy</text>
+</svg>

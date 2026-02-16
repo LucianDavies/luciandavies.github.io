@@ -1,0 +1,64 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 720 680" font-family="'SF Mono','Fira Code','Cascadia Code',monospace" font-size="13">
+  <style>
+    .box { fill:#1e1e2e; stroke:#89b4fa; stroke-width:1.5; rx:8; }
+    .label { fill:#cdd6f4; text-anchor:middle; dominant-baseline:central; }
+    .note { fill:#a6adc8; font-size:11; }
+    .arrow { stroke:#89b4fa; stroke-width:1.5; fill:none; marker-end:url(#arrowhead); }
+    .arrow-label { fill:#a6adc8; font-size:11; text-anchor:middle; }
+    .title { fill:#f38ba8; font-size:15; font-weight:bold; text-anchor:middle; }
+    .subtitle { fill:#89b4fa; font-size:13; font-weight:bold; text-anchor:middle; }
+  </style>
+  <defs>
+    <marker id="arrowhead" markerWidth="8" markerHeight="6" refX="8" refY="3" orient="auto">
+      <polygon points="0 0, 8 3, 0 6" fill="#89b4fa"/>
+    </marker>
+  </defs>
+  <rect width="720" height="680" fill="#181825" rx="12"/>
+
+  <text x="200" y="30" class="subtitle">PHOTOGRAPHER'S WORKFLOW</text>
+  <text x="540" y="30" class="subtitle">AUTOMATED PIPELINE</text>
+
+  <!-- Google Drive box -->
+  <rect x="60" y="55" width="280" height="160" class="box"/>
+  <text x="200" y="80" class="label" font-weight="bold" font-size="14">Google Drive</text>
+  <text x="200" y="110" class="note" text-anchor="middle">/galleries/</text>
+  <text x="200" y="130" class="note" text-anchor="middle">  /spain/</text>
+  <text x="200" y="150" class="note" text-anchor="middle">    img1.jpg</text>
+  <text x="200" y="170" class="note" text-anchor="middle">    img2.jpg</text>
+  <text x="200" y="195" class="note" text-anchor="middle">  /landscapes/ ...</text>
+
+  <!-- Annotations -->
+  <text x="440" y="90" class="note">Folders = galleries</text>
+  <text x="440" y="108" class="note">Photos = gallery items</text>
+  <text x="440" y="126" class="note">File descriptions = captions</text>
+  <text x="440" y="144" class="note">Folder descriptions = body text</text>
+
+  <!-- Arrow 1 -->
+  <line x1="200" y1="215" x2="200" y2="270" class="arrow"/>
+  <text x="310" y="248" class="arrow-label">Google Drive API (read-only)</text>
+
+  <!-- sync_drive.py box -->
+  <rect x="60" y="275" width="280" height="90" class="box"/>
+  <text x="200" y="305" class="label" font-weight="bold">sync_drive.py</text>
+  <text x="200" y="325" class="note" text-anchor="middle">Download images</text>
+  <text x="200" y="343" class="note" text-anchor="middle">Generate index.md per gallery</text>
+
+  <!-- Arrow 2 -->
+  <line x1="200" y1="365" x2="200" y2="420" class="arrow"/>
+  <text x="330" y="398" class="arrow-label">content/galleries/ (generated)</text>
+
+  <!-- Hugo box -->
+  <rect x="60" y="425" width="280" height="90" class="box"/>
+  <text x="200" y="455" class="label" font-weight="bold">Hugo</text>
+  <text x="200" y="475" class="note" text-anchor="middle">Static site generator</text>
+  <text x="200" y="493" class="note" text-anchor="middle">Responsive image processing</text>
+
+  <!-- Arrow 3 -->
+  <line x1="200" y1="515" x2="200" y2="570" class="arrow"/>
+  <text x="330" y="548" class="arrow-label">public/ (static HTML + images)</text>
+
+  <!-- GitHub Pages box -->
+  <rect x="60" y="575" width="280" height="80" class="box"/>
+  <text x="200" y="600" class="label" font-weight="bold">GitHub Pages</text>
+  <text x="200" y="620" class="note" text-anchor="middle">CDN-backed hosting · HTTPS · Free</text>
+</svg>

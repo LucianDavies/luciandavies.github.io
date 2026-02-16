@@ -13,12 +13,43 @@ images: []
 tags: ["architecture", "hugo", "google-drive", "github-actions", "python", "ci-cd"]
 categories: ["projects"]
 
-featuredImage: ""
-featuredImagePreview: ""
+featuredImage: "https://images.unsplash.com/photo-1555066931-4365d14bab8c?w=1200&q=80"
+featuredImagePreview: "https://images.unsplash.com/photo-1555066931-4365d14bab8c?w=600&q=80"
 
 hiddenFromHomePage: false
 hiddenFromSearch: false
 ---
+
+Someone close to me is a photographer. She needed a website to show her work — somewhere people could browse her photos, organised into galleries, without paying a monthly subscription.
+
+The catch? She's not technical. At all. She doesn't want to open a terminal, learn a code editor, or think about "deploying" anything. She just wants to put photos in a folder and have them show up on a website.
+
+<!--more-->
+
+I looked at the usual options. **Squarespace** and **SmugMug** charge monthly fees and lock you into their platform. Self-hosted galleries need a server to maintain. Static site generators like Hugo are free, but they expect you to use git and the command line to publish — a non-starter for someone who just wants to drag and drop.
+
+The gap was clear: nothing sat between **"I just want to drag photos into a folder"** and **"here's your website"**.
+
+## What I Built
+
+The answer turned out to be something she already uses every day: **Google Drive**.
+
+She creates folders in Drive — one per gallery — and drops photos into them. That's it. That's her entire workflow. Behind the scenes, an automated pipeline checks Drive for changes every few minutes, downloads any new or updated photos, builds a website from them, and publishes it. She never touches code, never opens a terminal, and never runs a deploy command.
+
+The website is completely free to host, loads fast, and looks good on any device. The whole thing costs exactly nothing to run.
+
+## How It Works (The Short Version)
+
+1. She organises photos into folders on Google Drive
+2. Every few minutes, a scheduled job checks if anything changed
+3. If it did, the pipeline downloads the photos, generates the site, and publishes it
+4. The website updates itself — no human intervention needed
+
+If you're curious about the nuts and bolts, the rest of this post goes deep into the architecture and technical decisions. If you're not, the summary above is really all there is to it.
+
+---
+
+# Technical Deep-Dive
 
 ## The Problem
 
@@ -37,144 +68,35 @@ want to drag photos into a folder"** and **"here's your website"**.
 ## The Solution
 
 Google Drive becomes the CMS. The photographer manages folders and photos in
-Drive -- a tool she already uses daily. A scheduled pipeline detects changes,
+Drive — a tool she already uses daily. A scheduled pipeline detects changes,
 downloads the images, generates the site, and deploys it. Zero interaction
 with code, git, or the command line.
 
-```
- PHOTOGRAPHER'S WORKFLOW            AUTOMATED PIPELINE
- ======================            ==================
-
- +----------------+
- |  Google Drive   |   Folders = galleries
- |                 |   Photos  = gallery items
- |  /galleries/    |   File descriptions = captions
- |    /spain/      |   Folder descriptions = body text
- |      img1.jpg   |
- |      img2.jpg   |
- |    /landscapes/  |
- |      ...        |
- +--------+--------+
-          |
-          | Google Drive API (read-only)
-          v
- +--------+--------+
- |  sync_drive.py   |   Download images
- |                 |   Generate index.md per gallery
- |                 |   Generate _index.md for listing
- +--------+--------+
-          |
-          | content/galleries/ (generated)
-          v
- +--------+--------+
- |  Hugo            |   Static site generator
- |                 |   Responsive image processing
- |                 |   Gallery theme (Pig.js layout)
- +--------+--------+
-          |
-          | public/ (static HTML + images)
-          v
- +--------+--------+
- |  GitHub Pages    |   CDN-backed hosting
- |                 |   HTTPS by default
- |                 |   Free
- +-----------------+
-```
+![Pipeline overview — from Google Drive to GitHub Pages](pipeline-overview.svg "Pipeline Overview")
 
 ## System Architecture
 
 ### Component Overview
 
-```
-+------------------------------------------------------------------+
-|                     GitHub Actions Workflow                        |
-|                                                                    |
-|  +----------+     +----------+     +---------+     +----------+   |
-|  |  check   |---->|  build   |---->| deploy  |---->| GitHub   |   |
-|  |  (fast)  |     |  (full)  |     |         |     | Pages    |   |
-|  +----------+     +----------+     +---------+     +----------+   |
-|   Scheduled        On change        Always if                      |
-|   only             or push          build OK                       |
-+------------------------------------------------------------------+
-
-Triggers:
-  - push to main        --> skip check, always build + deploy
-  - cron (every 5 min)  --> check first, build only if Drive changed
-  - manual dispatch     --> skip check, always build + deploy
-```
+![GitHub Actions workflow — check, build, deploy pipeline](github-actions-workflow.svg "GitHub Actions Workflow")
 
 ### Trigger Schedule
 
 The cron schedule targets the hours the photographer is most likely editing:
 
-```
-UTC Hour:  06  07  08  09  ...  19  20  21  22
-Local:     07  08  09  10  ...  20  21  22  23
-            |---|---|---|         |---|---|---|
-            Morning window       Evening window
-            (every 5 min)        (every 5 min)
-```
-
-Outside these windows, only pushes or manual triggers cause builds.
+![Trigger schedule — morning and evening windows](trigger-schedule.svg "Trigger Schedule")
 
 ### The Check Job (Lightweight)
 
 Runs on schedule only. Purpose: avoid full builds when nothing changed.
 
-```
-check_drive_changes.py
-======================
-
-  Read last_sync.txt from cache
-         |
-         v
-  +-- Has timestamp? --+
-  |                     |
-  No                   Yes
-  |                     |
-  v                     v
-  "Changed"       Query Drive API:
-  (first run)     "files modified after {timestamp}?"
-                        |
-                  +-----+-----+
-                  |           |
-                 Yes          No
-                  |           |
-                  v           v
-              "Changed"   "No changes"
-              (build)     (skip build)
-```
+![Check job flowchart — lightweight change detection](check-job-flowchart.svg "Check Job Flowchart")
 
 The timestamp is persisted between runs via GitHub Actions cache.
 
 ### The Build Job (Full)
 
-```
-  Install Hugo + Dart Sass
-         |
-         v
-  Checkout repo
-         |
-         v
-  sync_drive.py          <-- Downloads ALL images from Drive
-  |                          Generates content/galleries/
-  |  For each subfolder:
-  |    1. Create gallery dir
-  |    2. Download images (sanitise filenames)
-  |    3. Generate index.md with front matter
-  |  Generate _index.md (gallery listing)
-         |
-         v
-  Save sync timestamp    <-- For next check job
-         |
-         v
-  Hugo build              <-- Processes images (thumbnails, srcsets)
-  |                           Renders HTML from theme
-  |                           Minifies output
-         |
-         v
-  Upload artifact         <-- Static files in public/
-```
+![Build job steps — from install to artifact upload](build-job-steps.svg "Build Job Steps")
 
 ### The Deploy Job
 
@@ -184,40 +106,18 @@ check job was skipped (push/manual triggers).
 
 ## Data Flow: Drive Folder to Web Page
 
-```
-Google Drive                    Generated Files                  Website
-============                    ===============                  =======
-
-Folder: "spain"                 content/galleries/spain/
-  name: "spain"          --->     index.md:
-  description: "Photos          ---
-    from Barcelona"               title: Spain
-  created: 2026-02-14             date: 2026-02-14
-                                  resources:
-  File: "sunset.jpg"              - src: sunset.jpg
-    desc: "Beach sunset"  --->      title: "Beach sunset"      [lightbox
-  File: "market.jpg"              - src: market.jpg             caption]
-    desc: ""              --->    ---
-                                                                /galleries/
-                                  Photos from Barcelona         spain/
-                                                                  |
-                                                                  +-- grid of
-                                                                      responsive
-                                                                      thumbnails
-```
+![Data flow — from Drive folder to web page](data-flow.svg "Data Flow")
 
 ### Filename Sanitisation
 
 Drive filenames can contain spaces, uppercase, and special characters
 (`Copy of Copy of IMG-20241116-WA0011.jpg`). The sync script normalises them:
 
-```
-Original (Drive)                      Saved as
-================                      ========
-Copy of Copy of IMG-20241116.jpg  --> copy-of-copy-of-img-20241116.jpg
-My Photo (2).JPG                  --> my-photo-(2).jpg
-sunset.jpg                        --> sunset.jpg
-```
+| Original (Drive) | Saved as |
+|---|---|
+| `Copy of Copy of IMG-20241116.jpg` | `copy-of-copy-of-img-20241116.jpg` |
+| `My Photo (2).JPG` | `my-photo-(2).jpg` |
+| `sunset.jpg` | `sunset.jpg` |
 
 Rule: lowercase, spaces to hyphens. This prevents URL encoding issues and
 keeps Hugo's image processing happy.
@@ -269,75 +169,32 @@ never accidentally committed.
 The site uses the [Galleries Deluxe](https://github.com/bep/galleriesdeluxe)
 Hugo theme, imported as a Hugo Module (not a git submodule).
 
-```
-Theme module chain:
-  galleriesdeluxe (multi-gallery wrapper)
-    +-- gallerydeluxe (single gallery renderer, Pig.js grid)
-    +-- hugo-mod-misc/common-partials (SEO, Open Graph)
-```
+| Module | Role |
+|---|---|
+| **galleriesdeluxe** | Multi-gallery wrapper |
+| &emsp;gallerydeluxe | Single gallery renderer, Pig.js grid |
+| &emsp;hugo-mod-misc/common-partials | SEO, Open Graph |
 
 ### Theme Overrides
 
 The project overrides specific theme files to add caption support:
 
-```
-THEME FILE                              OVERRIDE PURPOSE
-==========                              ================
-partials/gallerydeluxe/init.html        Add "title" field to image JSON
-                                        so captions are available in JS
-
-partials/galleriesdeluxe/header.html    Show flat gallery list in nav
-                                        instead of category hierarchy
-
-js/gallerydeluxe/src/index.js           Display caption in lightbox when
-                                        image title differs from filename
-
-scss/galleriesdeluxe/vars-custom.scss   Style the caption overlay
-```
+| Theme File | Override Purpose |
+|---|---|
+| `partials/gallerydeluxe/init.html` | Add "title" field to image JSON so captions are available in JS |
+| `partials/galleriesdeluxe/header.html` | Show flat gallery list in nav instead of category hierarchy |
+| `js/gallerydeluxe/src/index.js` | Display caption in lightbox when image title differs from filename |
+| `scss/galleriesdeluxe/vars-custom.scss` | Style the caption overlay |
 
 ### Image Processing Pipeline
 
 Hugo processes each source image into multiple sizes for responsive loading:
 
-```
-sunset.jpg (original, e.g. 4000x3000)
-  |
-  +-- 20px wide   (blurred placeholder, inline base64)
-  +-- 100px wide  (tiny thumbnail)
-  +-- 250px wide  (small thumbnail)
-  +-- 500px wide  (medium, grid view)
-  +-- full size   (lightbox view)
-```
-
-These are referenced in a JSON manifest that Pig.js uses to build the
-justified grid layout.
+![Image processing pipeline — responsive sizes from source](image-processing.svg "Image Processing Pipeline")
 
 ## Security Model
 
-```
-+---------------------+     read-only      +------------------+
-| Service Account     |<------------------>| Google Drive     |
-| (no human login)    |  drive.readonly    | Shared Folder    |
-+---------------------+  scope only        +------------------+
-         |
-         | JSON key stored as
-         | GitHub Actions secret
-         v
-+---------------------+
-| GitHub Actions      |  Secrets are:
-| (ephemeral runner)  |  - encrypted at rest
-|                     |  - masked in logs
-|                     |  - scoped to repo
-+---------------------+
-         |
-         | Static files only
-         v
-+---------------------+
-| GitHub Pages        |  No server-side code
-| (CDN)               |  No database
-|                     |  No authentication surface
-+---------------------+
-```
+![Security model — service account to GitHub Pages](security-model.svg "Security Model")
 
 **Key security properties:**
 - Service account has **read-only** access to one shared folder
@@ -350,14 +207,12 @@ justified grid layout.
 
 Four caches reduce build time and API usage:
 
-```
-CACHE                   KEY                        PURPOSE
-=====                   ===                        =======
-pip packages            requirements.txt hash      Skip pip install (~5s saved)
-Hugo modules            go.sum hash                Skip module download (~6s saved)
-Hugo image cache        Built-in (4320h TTL)       Skip image reprocessing
-Sync timestamp          "drive-sync-timestamp"     Skip builds when Drive unchanged
-```
+| Cache | Key | Purpose |
+|---|---|---|
+| pip packages | `requirements.txt` hash | Skip pip install (~5s saved) |
+| Hugo modules | `go.sum` hash | Skip module download (~6s saved) |
+| Hugo image cache | Built-in (4320h TTL) | Skip image reprocessing |
+| Sync timestamp | `drive-sync-timestamp` | Skip builds when Drive unchanged |
 
 The sync timestamp cache is the most impactful: it turns a ~40s build into
 a ~10s no-op check on every 5-minute cron run when nothing has changed.
