@@ -6,7 +6,7 @@ lastmod: {{ .Date }}
 draft: true
 author: "Tonderai Khatai"
 authorLink: "https://myself@tldkhatai.com"
-description: ""
+description: "" # Write a ~150-character summary for SEO and social sharing
 license: ""
 images: []
 

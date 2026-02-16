@@ -1,6 +1,8 @@
-baseURL = "/"
+baseURL = "https://luciandavies.github.io/"
 languageCode = "en-us"
+title = "Tonderai Khatai"
 theme = ["github.com/dillonzq/LoveIt"]
+enableRobotsTXT = true
 
 [module]
 [module.hugoVersion]
@@ -59,7 +61,7 @@ dateFormat = "2006-01-02"
 title = "Tonderai Khatai"
 # website description for RSS, SEO, Open Graph and Twitter Cards
 # 网站描述, 用于 RSS, SEO, Open Graph 和 Twitter Cards
-description = ""
+description = "Senior software engineer sharing practical solutions to real-world problems in Node.js, TypeScript, Rust, and distributed systems."
 # website images for Open Graph and Twitter Cards
 # 网站图片, 用于 Open Graph 和 Twitter Cards
 images = []
@@ -218,7 +220,7 @@ avatarURL = ""
 title = "Tonderai Lucian Davies Khatai"
 # subtitle shown in home page (HTML format is supported)
 # 主页显示的网站副标题 (允许 HTML 格式)
-subtitle = "Software engineer | Puzzles aficionado | Mental wanderer"
+subtitle = "Senior Software Engineer | Node.js & TypeScript | Rust Enthusiast"
 # whether to use typeit animation for subtitle
 # 是否为副标题显示打字机动画
 typeit = false
@@ -227,7 +229,7 @@ typeit = false
 social = true
 # disclaimer (HTML format is supported)
 # 免责声明 (支持 HTML 格式)
-disclaimer = "Not even sure if my views are my own"
+disclaimer = "Solving problems one commit at a time"
 # Home page posts
 # 主页文章列表
 [params.home.posts]
@@ -559,7 +561,7 @@ images = []
 # Publisher info
 # 出版者信息
 [params.page.seo.publisher]
-name = ""
+name = "Tonderai Khatai"
 logoUrl = ""
 
 # TypeIt config
