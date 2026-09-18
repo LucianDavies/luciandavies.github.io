@@ -1,7 +1,7 @@
 ---
 title: "Handovha: A Verifiable Handover, Without Accounts"
 subtitle: "Magic links, immutable signatures, and a $6/month droplet"
-date: 2026-09-18T00:00:00+01:00
+date: 2026-03-18T00:00:00+01:00
 lastmod: 2026-09-18T00:00:00+01:00
 draft: false
 author: "Tonderai Khatai"

@@ -1,8 +1,8 @@
 ---
 title: "Functional Core, Imperative Shell Makes Sense for Micro Apps"
 subtitle: "Not the whole framework — just the one habit worth keeping"
-date: 2026-09-18T00:00:00+01:00
-lastmod: 2026-09-18T00:00:00+01:00
+date: 2026-04-15T00:00:00+01:00
+lastmod: 2026-04-15T00:00:00+01:00
 draft: false
 author: "Tonderai Khatai"
 authorLink: "https://www.linkedin.com/in/tldkhatai/"
