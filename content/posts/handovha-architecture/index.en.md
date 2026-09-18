@@ -6,7 +6,7 @@ lastmod: 2026-09-18T00:00:00+01:00
 draft: false
 author: "Tonderai Khatai"
 authorLink: "https://www.linkedin.com/in/tldkhatai/"
-description: "The architecture behind Handovha, a passwordless tool for generating verifiable handover certificates — how it keeps a signed record trustworthy without accounts, and why the data model got simpler over time, not more complex."
+description: "The architecture behind Handovha, a passwordless tool for generating verifiable handover certificates — how it keeps a signed record trustworthy without accounts, using magic-link identity, signature invalidation, and a public-but-unindexed verification page."
 license: ""
 images: []
 
@@ -44,7 +44,7 @@ The interesting engineering isn't the wizard — it's what has to be true undern
 3. Once both signatures are in, a certificate PDF is generated, emailed to both parties, and published at a public link with a QR code
 4. Anyone holding that link or QR can verify it — no login required
 
-If you're curious about the mechanics — how a signature actually gets protected, and why the data model here is a rewrite that got *simpler* rather than a rewrite that got more features — the rest of this post goes into that.
+If you're curious about the mechanics — how a signature actually gets protected, and what "public but verifiable" means in practice — the rest of this post goes into that.
 
 ---
 
@@ -128,24 +128,6 @@ if (handover.status !== "completed" && (!req.user || !canView(handover, req.user
 ```
 
 A completed certificate's photos and signatures are served without auth too, since they back the public verification page. A draft in progress is never public, regardless of who asks.
-
-## The rewrite that removed code
-
-Handovha didn't start as a single-purpose handover tool. It started from a generic multi-tenant SaaS starter — tenants, roles, memberships, invites, projects, Postgres row-level security enforcing tenant isolation. Reasonable defaults for "some SaaS product," and completely wrong for what this needed to be.
-
-Once the actual shape of the product was clear — one person creates a record, two people sign it, anyone with the link verifies it — that whole layer was dead weight. Migration `011_handover_pivot.sql` drops it outright:
-
-```sql
--- The product pivoted from a generic multi-tenant SaaS starter
--- (workspaces, roles, invites, projects) to a single-purpose handover
--- certificate generator with magic-link identity. None of the
--- tenant/role machinery applies anymore, so it's dropped outright
--- rather than left dormant.
-DROP TABLE IF EXISTS project_grants, projects, role_permissions, permissions,
-  activity_log, invites, memberships, password_resets, tenants CASCADE;
-```
-
-No feature flag, no "keep it around in case," no unused columns left behind to confuse the next migration. If a system's shape has genuinely changed, the old shape is a liability sitting in the schema, not an asset. Deleting a table you're certain is dead is a much smaller risk than the slow accumulation of things nobody's sure are safe to remove.
 
 ## Storage as an interface, not a decision
 
