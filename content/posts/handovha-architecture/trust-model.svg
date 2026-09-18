@@ -19,7 +19,7 @@
     </marker>
   </defs>
   <rect width="800" height="360" fill="#181825" rx="12"/>
-  <text x="400" y="28" class="heading">Two visibility rules, same predicate, checked twice</text>
+  <text x="400" y="28" class="heading">Public, but not all-or-nothing</text>
 
   <!-- Identity column -->
   <text x="120" y="55" class="col">Identity</text>
@@ -39,9 +39,9 @@
   <text x="370" y="132" class="note">OR (completed AND</text>
   <text x="370" y="148" class="note">from_email/to_email = me)</text>
   <line x1="370" y1="165" x2="370" y2="195" class="arrow"/>
-  <text x="370" y="205" class="note">GET /files/:type/:id/*</text>
-  <text x="370" y="219" class="note" font-size="9.5">same predicate — draft assets</text>
-  <text x="370" y="231" class="note" font-size="9.5">never public</text>
+  <text x="370" y="205" class="note">GET /files/photos/:id/*</text>
+  <text x="370" y="219" class="note" font-size="9.5">open once completed</text>
+  <text x="370" y="231" class="note" font-size="9.5">signatures + PDF stay party-only</text>
 
   <line x1="210" y1="95" x2="248" y2="95" class="arrow"/>
 
@@ -49,10 +49,10 @@
   <text x="650" y="55" class="col">Public — no auth (deliberate)</text>
   <rect x="540" y="65" width="220" height="120" rx="8" class="box-open"/>
   <text x="650" y="92" class="label-c" fill="#a6e3a1">GET /certificates/:id</text>
-  <text x="650" y="112" class="note">status = 'completed' only</text>
-  <text x="650" y="130" class="note">QR / link is the credential —</text>
-  <text x="650" y="146" class="note">that's the whole point of</text>
-  <text x="650" y="162" class="note">a verifiable certificate</text>
+  <text x="650" y="110" class="note">party?  → real ID + signature</text>
+  <text x="650" y="126" class="note">stranger? → name only,</text>
+  <text x="650" y="142" class="note">ID/signature shown as a</text>
+  <text x="650" y="158" class="note">truncated SHA-256 hash</text>
 
   <line x1="650" y1="185" x2="650" y2="215" class="arrow-open"/>
   <rect x="540" y="220" width="220" height="55" rx="8" class="box"/>
@@ -60,6 +60,6 @@
   <text x="650" y="260" class="note">reachable ≠ indexable — names</text>
 
   <line x1="490" y1="140" x2="538" y2="120" class="arrow" stroke-dasharray="3 3"/>
-  <text x="510" y="300" class="note" font-size="10">Certificate names + ID numbers stay out of the sitemap and crawl,</text>
-  <text x="510" y="315" class="note" font-size="10">even though the route itself answers anyone holding the link.</text>
+  <text x="510" y="300" class="note" font-size="10">The hash proves two people are looking at the same signature without</text>
+  <text x="510" y="315" class="note" font-size="10">exposing it — verifiable for a stranger, fully visible for a named party.</text>
 </svg>

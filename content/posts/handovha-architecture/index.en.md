@@ -70,8 +70,6 @@ Two details matter more than they look:
 - **The response to `/login` never reveals whether an account already existed.** Same message either way. Otherwise the endpoint becomes a way to check who has an account here just by watching what comes back.
 - **Consuming the token and creating the user happen in one transaction.** If those were two separate steps, a crash in between would leave a technically-unconsumed token that could be replayed to create a duplicate identity for the same email.
 
-{{< figure src="trust-model.svg" alt="Two visibility rules, checked at two different layers, sharing one predicate" >}}
-
 ## A signature has to mean something
 
 The actual hard problem in a tool like this isn't collecting a signature — a `<canvas>` and a PNG blob gets you that in an afternoon. It's making sure the signature still means what it meant *when it was drawn*, for as long as the certificate exists.
@@ -99,11 +97,42 @@ This is the one piece of business logic in the whole app that isn't optional. Ev
 
 The certificate ID itself (`HC-XXXXXXXX`, random hex) is generated and checked for a collision on insert, retried up to five times against a unique constraint at the database level — a bare loop is simpler and just as correct as pre-checking for existence, since the database is the actual source of truth for uniqueness either way.
 
-## Public by design, but not indexed
+## Public by design, but not everything is public
 
 The verification page — `GET /certificates/:certificateId` — is the one route in the app that's intentionally open to anyone, no session required. That's not an oversight; it's the entire point. A certificate that only its creator can check isn't a certificate, it's a private note.
 
-But "anyone with the link can see it" is a different guarantee from "this shows up in search results," and a certificate carries real names and ID numbers. So the route is explicitly excluded from `robots.txt` and the sitemap even though it answers any request:
+But "anyone with the link can verify this happened" is a narrower claim than "anyone with the link can see everything on it." A stranger who finds a certificate link shouldn't be able to read out someone's ID number or download their signature image — they just need to be convinced the record is genuine. So a non-party viewer gets a name, a date, and a *hash* standing in for anything actually personal:
+
+```ts
+const isParty = !!req.user && (req.user.email === handover.from_email || req.user.email === handover.to_email);
+const pdfUrl = isParty && handover.certificate_key ? storage.url(handover.certificate_key) : null;
+
+let signatureHashes: Record<string, { hash: string; signedAt: Date }> | null = null;
+if (!isParty) {
+  signatureHashes = {};
+  for (const sig of signatures) {
+    const bytes = await storage.read(sig.storage_key);
+    signatureHashes[sig.party] = { hash: hashPreview(bytes), signedAt: sig.signed_at };
+  }
+}
+```
+
+The hash is a truncated SHA-256 of the actual ID number or signature image bytes — deterministic, so the same underlying value always produces the same hash, but not reversible back into that value. That gets a non-party viewer something genuinely useful (if the record is later disputed, two people can compare hashes and confirm they're looking at the same signature without either of them re-exposing it) without handing out the thing itself. The signed party still sees everything in the clear — `isParty` is the only branch, not a separate role — because ID numbers and signature images are exactly what *they* need the certificate to actually contain.
+
+{{< figure src="trust-model.svg" alt="Public verification shows a party everything and a stranger a tamper-evident hash instead" >}}
+
+The file-serving route enforces the same split. Photos stay open on a completed handover, since they back the public page and were never the sensitive part; signatures and the PDF (which embeds both parties' ID numbers and full signature images) are restricted to the creator-or-party audience even after completion, closing off the obvious workaround of just fetching the file directly instead of the hashed page:
+
+```ts
+const PARTY_ONLY_TYPES = new Set(["signatures", "documents"]);
+// ...
+const restrictedType = PARTY_ONLY_TYPES.has(req.params.type);
+if ((handover.status !== "completed" || restrictedType) && (!req.user || !canView(handover, req.user))) {
+  return res.status(404).end();
+}
+```
+
+The certificate still carries real names, so the route stays out of the crawl entirely — "verifiable if you have the link" and "indexable" are still two different things:
 
 ```
 Disallow: /dashboard
@@ -112,22 +141,14 @@ Disallow: /certificates
 Disallow: /login
 ```
 
-Everywhere else, visibility follows one rule, enforced at two separate layers because they're reachable independently: **you can see a handover if you created it, or if you're named as a party by email once it's completed.** The dashboard query and the authenticated file-serving route both encode that same predicate rather than one trusting the other:
+Everywhere else in the app, visibility follows one rule: **you can see a handover if you created it, or if you're named as a party by email once it's completed.** The dashboard listing encodes that same predicate independently, rather than trusting the file-serving route to be the only place it's enforced:
 
 ```sql
--- Dashboard listing
 WHERE created_by_user_id = $1
    OR (status = 'completed' AND (from_email = $2 OR to_email = $2))
 ```
 
-```ts
-// File serving (photos, signatures, the certificate PDF itself)
-if (handover.status !== "completed" && (!req.user || !canView(handover, req.user))) {
-  return res.status(404).end();
-}
-```
-
-A completed certificate's photos and signatures are served without auth too, since they back the public verification page. A draft in progress is never public, regardless of who asks.
+A draft still in progress is never public, regardless of who asks — that part hasn't changed; what changed is how much of a *completed* certificate a non-party actually gets to see.
 
 ## Storage as an interface, not a decision
 
