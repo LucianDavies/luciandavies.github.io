@@ -1,0 +1,62 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 800 320" font-family="'SF Mono','Fira Code','Cascadia Code',monospace">
+  <style>
+    .box { fill:#1e1e2e; stroke:#89b4fa; stroke-width:1.5; }
+    .box-done { fill:#1e1e2e; stroke:#a6e3a1; stroke-width:1.5; }
+    .label-c { fill:#cdd6f4; text-anchor:middle; font-size:13px; font-weight:bold; }
+    .note { fill:#a6adc8; font-size:11px; text-anchor:middle; }
+    .heading { fill:#f9e2af; font-size:14px; font-weight:bold; text-anchor:middle; }
+    .arrow { stroke:#89b4fa; stroke-width:1.5; fill:none; marker-end:url(#a6); }
+    .arrow-warn { stroke:#f38ba8; stroke-width:1.5; fill:none; marker-end:url(#a7); stroke-dasharray:4 3; }
+    .warn { fill:#f38ba8; font-size:10.5px; text-anchor:middle; }
+  </style>
+  <defs>
+    <marker id="a6" markerWidth="8" markerHeight="6" refX="8" refY="3" orient="auto">
+      <polygon points="0 0, 8 3, 0 6" fill="#89b4fa"/>
+    </marker>
+    <marker id="a7" markerWidth="8" markerHeight="6" refX="8" refY="3" orient="auto">
+      <polygon points="0 0, 8 3, 0 6" fill="#f38ba8"/>
+    </marker>
+  </defs>
+  <rect width="800" height="320" fill="#181825" rx="12"/>
+  <text x="400" y="30" class="heading">Handover status — a signature attests to a specific state</text>
+
+  <!-- draft -->
+  <rect x="30" y="60" width="150" height="70" rx="8" class="box"/>
+  <text x="105" y="90" class="label-c">draft</text>
+  <text x="105" y="110" class="note">object · location · parties</text>
+
+  <line x1="180" y1="95" x2="240" y2="95" class="arrow"/>
+  <text x="210" y="80" class="note">both parties named</text>
+
+  <!-- awaiting_signatures -->
+  <rect x="245" y="60" width="180" height="70" rx="8" class="box"/>
+  <text x="335" y="90" class="label-c">awaiting_signatures</text>
+  <text x="335" y="110" class="note">from signs, then to signs</text>
+
+  <line x1="425" y1="95" x2="490" y2="95" class="arrow"/>
+  <text x="458" y="80" class="note">2/2 signed</text>
+
+  <!-- completed -->
+  <rect x="495" y="60" width="150" height="70" rx="8" class="box-done"/>
+  <text x="570" y="90" class="label-c" fill="#a6e3a1">completed</text>
+  <text x="570" y="110" class="note">certificate issued</text>
+
+  <line x1="645" y1="95" x2="710" y2="95" class="arrow"/>
+
+  <!-- certificate -->
+  <rect x="715" y="55" width="70" height="80" rx="8" class="box-done" style="stroke:#f9e2af"/>
+  <text x="750" y="85" class="note" fill="#f9e2af">PDF +</text>
+  <text x="750" y="100" class="note" fill="#f9e2af">QR</text>
+  <text x="750" y="118" class="note" fill="#f9e2af">emailed</text>
+
+  <!-- edit-clears-signature loop -->
+  <path d="M 335 130 C 335 200, 570 200, 570 130" class="arrow-warn"/>
+  <text x="452" y="220" class="warn">editing any signed field (photo, party, location)</text>
+  <text x="452" y="236" class="warn">clears that signature — a completed record rolls back</text>
+  <text x="452" y="252" class="warn">to awaiting_signatures, certificate revoked</text>
+
+  <!-- id collision note -->
+  <text x="750" y="150" class="note" font-size="9.5">id HC-XXXXXXXX</text>
+  <text x="750" y="163" class="note" font-size="9.5">retried on</text>
+  <text x="750" y="176" class="note" font-size="9.5">collision (5x)</text>
+</svg>
