@@ -6,7 +6,7 @@ lastmod: 2022-12-10T16:37:30+01:00
 draft: false
 author: "Tonderai Khatai"
 authorLink: "https://myself@tldkhatai.com"
-description: "About Tonderai Khatai — senior software engineer specialising in Node.js, TypeScript, Rust, and distributed systems."
+description: "About Tonderai Khatai — senior software engineer specialising in system design, distributed systems, and payments infrastructure in Node.js and TypeScript."
 license: ""
 images: []
 
@@ -23,14 +23,14 @@ hiddenFromSearch: false
 
 ## Hi, I'm Tonderai
 
-I'm a senior software engineer based in Berlin, currently working at **Klarna** on banking products — transaction lifecycles, mapping engines, and payment processing systems.
+I'm a software engineer with over a decade of experience, based in Berlin. I've spent that time building systems at companies including **Klarna** and **On** — both of which went public during my tenure. At Klarna, I'm a Senior Software Engineer on the Transaction Banking team, working on SEPA and DCL-based credit transfer and direct debit systems, merchant payout infrastructure, and real-time transaction notifications, built on AWS (SQS, Lambda) and Kafka — including leading migration efforts across these systems and mentoring engineers on design and code quality. At On, I was Technical Lead for 3rd-party logistics (3PL) and EDI integrations with Dynamics 365 ERP, leading and mentoring a team of three backend engineers — all three went on to lead teams of their own.
 
-My day-to-day revolves around **Node.js** and **TypeScript**, and I'm increasingly drawn to **Rust** for performance-critical work. Over the years I've built everything from API wrappers handling airtime transfers across 20+ countries to permission modules for Koa.js.
+My work sits on the decisions that are expensive to get wrong: where service boundaries should live, how a system degrades under partial failure, what happens when an upstream payment rail misbehaves in production. The stack is mostly **Node.js** and **TypeScript** professionally; I also tinker with **Rust** on the side. The constant across all of it is reasoning about a system's failure modes before they become incidents.
 
 ### What this blog is about
 
-This is where I document problems I've solved — for myself and sometimes at work. Expect posts on debugging tricky production issues, system design decisions, integration patterns, and the occasional deep-dive into a language feature or tool that made my life easier.
+This is where I write up the architecture and tradeoffs behind systems I've built — not tutorials, but the reasoning: why a design won out over its alternatives, what broke, what the failure model actually looked like, and what I'd change with hindsight. Recent example: [Building a Zero-Code Photography Portfolio](/posts/eyes-of-wadzi-architecture/), a full breakdown of a Drive-as-CMS pipeline's security model, data flow, and CI/CD design.
 
-If you've stumbled across a post that helped you, or want to chat, feel free to reach out.
+If a post helped you, or you want to talk systems design, feel free to reach out.
 
 [LinkedIn](https://www.linkedin.com/in/tldkhatai/) | [GitHub](https://github.com/LucianDavies)
