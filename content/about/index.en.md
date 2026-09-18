@@ -29,7 +29,7 @@ My work sits on the decisions that are expensive to get wrong: where service bou
 
 ### What this blog is about
 
-This is where I write up the architecture and tradeoffs behind systems I've built — not tutorials, but the reasoning: why a design won out over its alternatives, what broke, what the failure model actually looked like, and what I'd change with hindsight. Recent example: [Building a Zero-Code Photography Portfolio](/posts/eyes-of-wadzi-architecture/), a full breakdown of a Drive-as-CMS pipeline's security model, data flow, and CI/CD design.
+This is where I write up the architecture and tradeoffs behind systems I've built — not tutorials, but the reasoning: why a design won out over its alternatives, what broke, what the failure model actually looked like, and what I'd change with hindsight. Recent examples: [Handovha](/posts/handovha-architecture/), on keeping a signature trustworthy without accounts, and [Building a Zero-Code Photography Portfolio](/posts/eyes-of-wadzi-architecture/), a full breakdown of a Drive-as-CMS pipeline's security model, data flow, and CI/CD design.
 
 If a post helped you, or you want to talk systems design, feel free to reach out.
 
