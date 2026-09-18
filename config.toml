@@ -8,6 +8,16 @@ enableRobotsTXT = true
   [markup.goldmark]
     [markup.goldmark.renderer]
       unsafe = true
+  [markup.highlight]
+    codeFences = true
+    guessSyntax = true
+    lineNos = false
+    lineNumbersInTable = true
+    # Inline styles baked in at build time, rather than relying on the
+    # theme's own CSS classes for code coloring — keeps the highlighting
+    # correct and consistent regardless of what LoveIt itself ships.
+    noClasses = true
+    style = "solarized-dark"
 
 [module]
 [module.hugoVersion]
