@@ -103,7 +103,7 @@ The verification page — `GET /certificates/:certificateId` — is the one rout
 
 But "anyone with the link can verify this happened" is a narrower claim than "anyone with the link can see everything on it." A stranger who finds a certificate link shouldn't be able to read out someone's ID number or download their signature image — they just need to be convinced the record is genuine. So a non-party viewer gets a name, a date, and a *hash* standing in for anything actually personal:
 
-```ts
+```typescript
 const isParty = !!req.user && (req.user.email === handover.from_email || req.user.email === handover.to_email);
 const pdfUrl = isParty && handover.certificate_key ? storage.url(handover.certificate_key) : null;
 
@@ -123,7 +123,7 @@ The hash is a truncated SHA-256 of the actual ID number or signature image bytes
 
 The file-serving route enforces the same split. Photos stay open on a completed handover, since they back the public page and were never the sensitive part; signatures and the PDF (which embeds both parties' ID numbers and full signature images) are restricted to the creator-or-party audience even after completion, closing off the obvious workaround of just fetching the file directly instead of the hashed page:
 
-```ts
+```typescript
 const PARTY_ONLY_TYPES = new Set(["signatures", "documents"]);
 // ...
 const restrictedType = PARTY_ONLY_TYPES.has(req.params.type);
@@ -154,7 +154,7 @@ A draft still in progress is never public, regardless of who asks — that part 
 
 Uploaded photos, signature PNGs, and generated certificate PDFs currently live on the droplet's disk, on a mounted volume so they survive a redeploy. But nothing in the route handlers knows that:
 
-```ts
+```typescript
 export interface Storage {
   save(key: string, data: Buffer, contentType: string): Promise<void>;
   read(key: string): Promise<Buffer>;

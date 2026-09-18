@@ -32,7 +32,7 @@ But the core discipline underneath the framework — **decide first, as a pure f
 
 **Visibility is a pure predicate, not a query.** Whether a user can see or edit a given handover is answered by two small functions that take plain data and return a boolean — no database handle, no request object:
 
-```ts
+```typescript
 function canView(handover: Handover, user: { id: number; email: string }): boolean {
   return (
     handover.created_by_user_id === user.id ||
@@ -50,7 +50,7 @@ This is exactly an "invariant" in Antman's terms, and it falls out naturally fro
 
 **The decision about what changed is separated from the effect of clearing it.** When someone edits a handover after a signature has been collected, that signature has to be invalidated — otherwise it would silently cover data the signer never saw. The route handler computes the *decision* as plain booleans before doing anything about it:
 
-```ts
+```typescript
 const fromChanged =
   (handover.from_name || "") !== body.fromName ||
   (handover.from_email || "") !== body.fromEmail ||
@@ -68,7 +68,7 @@ if (changedParties.length > 0) await clearSignatures(handover.id, changedParties
 
 **ID generation splits format from persistence the same way.** A certificate ID is a random 8-hex-character string with a fixed shape, checked against a real uniqueness constraint in Postgres:
 
-```ts
+```typescript
 async function generateCertificateId(): Promise<string> {
   return "HC-" + crypto.randomBytes(4).toString("hex").toUpperCase();
 }
@@ -91,7 +91,7 @@ The *shape* of a valid ID (`^HC-[0-9A-F]{8}$`) is a pure fact, checked elsewhere
 
 The certificate PDF generator is the one place this discipline breaks down, and it's a real cost, not a hypothetical one. `buildCertificatePdf` is supposed to be a rendering function — given a handover, its photos, and its signatures, lay out a PDF. But it starts by doing I/O:
 
-```ts
+```typescript
 async function buildCertificatePdf(verifyUrl: string, handover: Handover, photos, signatures): Promise<Buffer> {
   const qrDataUrl = await QRCode.toDataURL(verifyUrl, { margin: 0, errorCorrectionLevel: "H" });
   const signatureImages = new Map<string, Buffer>();
