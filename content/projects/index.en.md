@@ -36,7 +36,7 @@ A passwordless tool for turning a physical handover into a signed, verifiable ce
 ---
 
 <div style="display:flex;align-items:center;gap:.6rem;margin:1.5rem 0 .4rem;">
-  <img src="/icons/mailgun.png" alt="" width="28" height="28">
+  <img src="/icons/mail-koenig.svg" alt="" width="28" height="28">
   <h2 style="margin:0;">Mail Koenig</h2>
 </div>
 
