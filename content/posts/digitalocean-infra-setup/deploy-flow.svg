@@ -1,0 +1,67 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 800 300" font-family="'SF Mono','Fira Code','Cascadia Code',monospace">
+  <style>
+    .box { fill:#1e1e2e; stroke:#89b4fa; stroke-width:1.5; }
+    .box-warn { fill:#1e1e2e; stroke:#f9e2af; stroke-width:1.5; }
+    .box-done { fill:#1e1e2e; stroke:#a6e3a1; stroke-width:1.5; }
+    .label-c { fill:#cdd6f4; text-anchor:middle; font-size:11.5px; font-weight:bold; }
+    .note { fill:#a6adc8; font-size:9.5px; text-anchor:middle; }
+    .heading { fill:#f9e2af; font-size:14px; font-weight:bold; text-anchor:middle; }
+    .arrow { stroke:#89b4fa; stroke-width:1.5; fill:none; marker-end:url(#a11); }
+    .arrow-fail { stroke:#f38ba8; stroke-width:1.5; fill:none; marker-end:url(#a12); stroke-dasharray:4 3; }
+  </style>
+  <defs>
+    <marker id="a11" markerWidth="8" markerHeight="6" refX="8" refY="3" orient="auto">
+      <polygon points="0 0, 8 3, 0 6" fill="#89b4fa"/>
+    </marker>
+    <marker id="a12" markerWidth="8" markerHeight="6" refX="8" refY="3" orient="auto">
+      <polygon points="0 0, 8 3, 0 6" fill="#f38ba8"/>
+    </marker>
+  </defs>
+  <rect width="800" height="300" fill="#181825" rx="12"/>
+  <text x="400" y="26" class="heading">./infra/deploy.sh &lt;name&gt; — one linear script, no orchestrator</text>
+
+  <rect x="20" y="55" width="115" height="55" rx="8" class="box"/>
+  <text x="77" y="78" class="label-c">pg_dump backup</text>
+  <text x="77" y="94" class="note">before touching DB</text>
+
+  <rect x="150" y="55" width="105" height="55" rx="8" class="box"/>
+  <text x="202" y="78" class="label-c">npm run build</text>
+  <text x="202" y="94" class="note">locally</text>
+
+  <rect x="270" y="55" width="120" height="55" rx="8" class="box"/>
+  <text x="330" y="78" class="label-c">rsync --delete</text>
+  <text x="330" y="94" class="note">dist/views/migrations</text>
+
+  <rect x="405" y="55" width="130" height="55" rx="8" class="box"/>
+  <text x="470" y="78" class="label-c">npm ci --omit=dev</text>
+  <text x="470" y="94" class="note">on the droplet</text>
+
+  <rect x="550" y="55" width="115" height="55" rx="8" class="box"/>
+  <text x="607" y="78" class="label-c">systemctl restart</text>
+  <text x="607" y="94" class="note">the app service</text>
+
+  <rect x="680" y="55" width="100" height="55" rx="8" class="box-done"/>
+  <text x="730" y="78" class="label-c" fill="#a6e3a1">curl /ready</text>
+  <text x="730" y="94" class="note">until healthy</text>
+
+  <line x1="135" y1="82" x2="148" y2="82" class="arrow"/>
+  <line x1="255" y1="82" x2="268" y2="82" class="arrow"/>
+  <line x1="390" y1="82" x2="403" y2="82" class="arrow"/>
+  <line x1="535" y1="82" x2="548" y2="82" class="arrow"/>
+  <line x1="665" y1="82" x2="678" y2="82" class="arrow"/>
+
+  <path d="M 607 110 C 607 140, 460 140, 460 160" class="arrow-fail"/>
+  <rect x="360" y="160" width="200" height="55" rx="8" class="box-warn"/>
+  <text x="460" y="183" class="label-c" fill="#f9e2af">restart fails →</text>
+  <text x="460" y="199" class="note">exit non-zero, print</text>
+  <text x="460" y="211" class="note">"journalctl -u &lt;name&gt; -n 50" hint</text>
+
+  <line x1="730" y1="110" x2="730" y2="140" class="arrow"/>
+  <rect x="630" y="140" width="200" height="55" rx="8" class="box"/>
+  <text x="730" y="163" class="label-c">has a worker_entry?</text>
+  <text x="730" y="179" class="note">restart &lt;name&gt;-worker.service</text>
+  <text x="730" y="191" class="note">health-checked the same way</text>
+
+  <text x="400" y="255" class="note" font-size="10.5">Same script, re-run safely — full rsync + npm ci + restart every time,</text>
+  <text x="400" y="270" class="note" font-size="10.5">no partial-deploy state to reconcile and nothing to roll forward from.</text>
+</svg>
