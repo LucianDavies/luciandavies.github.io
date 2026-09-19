@@ -9,15 +9,11 @@ enableRobotsTXT = true
     [markup.goldmark.renderer]
       unsafe = true
   [markup.highlight]
-    codeFences = true
-    guessSyntax = true
-    lineNos = false
-    lineNumbersInTable = true
-    # Inline styles baked in at build time, rather than relying on the
-    # theme's own CSS classes for code coloring — keeps the highlighting
-    # correct and consistent regardless of what LoveIt itself ships.
-    noClasses = true
-    style = "solarized-dark"
+    # Hugo's own default is noClasses = true (inline styles, ignoring the
+    # theme entirely) — LoveIt ships its own light/dark-aware syntax colors
+    # as CSS classes (.highlight .s, [theme=dark] .highlight .s, etc.), which
+    # only take effect when Chroma emits classes instead of inline styles.
+    noClasses = false
 
 [module]
 [module.hugoVersion]
