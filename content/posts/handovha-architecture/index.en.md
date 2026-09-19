@@ -20,13 +20,21 @@ hiddenFromHomePage: false
 hiddenFromSearch: false
 ---
 
-Memory is not a receipt. A landlord and a tenant walk through a flat together, agree it's fine, and shake hands. Six months later one of them remembers a scuff on the wall being there already; the other doesn't. A fleet manager hands a van to a driver with a full tank and no dents; a week later, someone disagrees about which of those was true at handover. None of this is fraud, usually — it's just that nobody wrote anything down at the one moment it mattered.
+Memory is not a receipt. A landlord and a tenant agree a flat is fine at handover; six months later they remember it differently. A fleet manager hands over a van with a full tank and no dents; a week later, someone disputes which of those was true.
 
 <!--more-->
 
-**Handovha** is a small web tool that solves exactly that: two people, on one phone, at the moment an item or responsibility changes hands, produce a signed, timestamped, verifiable certificate — photos, both signatures, a QR code — with no app to install and no account to create beforehand.
+## Bottom Line
 
-## What I Built
+**Handovha** turns a handover into a signed, timestamped, verifiable certificate — two people, one phone, no app to install, no account to create beforehand. The hard part was never collecting a signature; it's making sure a signature still means what it meant when it was drawn, and making the resulting certificate provably genuine to a stranger without accounts, passwords, or exposing anything personal in the process.
+
+## Why It Matters
+
+The obvious way to build "two people need to attest to something, and a third party might later verify it" is user accounts, roles, and a permissions system. That's exactly the wrong instinct here: the entire value of a tool like this is that neither party opens an app or creates a login. Getting the trust model right *without* that scaffolding — so "signed" still means something and "verified" doesn't leak anyone's ID number — is the actual engineering problem, and it's a pattern that generalises to anything where two parties confirm a state and a stranger might need to check it later.
+
+## Evidence & Explanation
+
+### What I Built
 
 The core loop is a four-step wizard: what's being handed over, where, and to/from whom, followed by both parties signing on the same device, one after the other. Completing it generates a PDF certificate with a QR code, emails it to both parties, and publishes it at a public, permanent verification URL.
 
@@ -37,20 +45,14 @@ The interesting engineering isn't the wizard — it's what has to be true undern
 - The verification page has to work for a stranger with no account, while a draft-in-progress stays private
 - None of this needed a second server, a queue, or a database beyond Postgres
 
-## How It Works (The Short Version)
+### How It Works (The Short Version)
 
 1. You start a handover, describe the item, add photos, and name both parties by email
 2. Each party signs on the same device, one after the other
 3. Once both signatures are in, a certificate PDF is generated, emailed to both parties, and published at a public link with a QR code
 4. Anyone holding that link or QR can verify it — no login required
 
-If you're curious about the mechanics — how a signature actually gets protected, and what "public but verifiable" means in practice — the rest of this post goes into that.
-
----
-
-# Technical Deep-Dive
-
-## Identity without passwords
+### Identity without passwords
 
 Handovha never stores a password. Signing in is a magic link: you give an email address, get a random 32-byte token by email, and clicking it creates your account on the spot if you don't already have one.
 
@@ -70,7 +72,7 @@ Two details matter more than they look:
 - **The response to `/login` never reveals whether an account already existed.** Same message either way. Otherwise the endpoint becomes a way to check who has an account here just by watching what comes back.
 - **Consuming the token and creating the user happen in one transaction.** If those were two separate steps, a crash in between would leave a technically-unconsumed token that could be replayed to create a duplicate identity for the same email.
 
-## A signature has to mean something
+### A signature has to mean something
 
 The actual hard problem in a tool like this isn't collecting a signature — a `<canvas>` and a PNG blob gets you that in an afternoon. It's making sure the signature still means what it meant *when it was drawn*, for as long as the certificate exists.
 
@@ -97,7 +99,7 @@ This is the one piece of business logic in the whole app that isn't optional. Ev
 
 The certificate ID itself (`HC-XXXXXXXX`, random hex) is generated and checked for a collision on insert, retried up to five times against a unique constraint at the database level — a bare loop is simpler and just as correct as pre-checking for existence, since the database is the actual source of truth for uniqueness either way.
 
-## Public by design, but not everything is public
+### Public by design, but not everything is public
 
 The verification page — `GET /certificates/:certificateId` — is the one route in the app that's intentionally open to anyone, no session required. That's not an oversight; it's the entire point. A certificate that only its creator can check isn't a certificate, it's a private note.
 
@@ -150,7 +152,7 @@ WHERE created_by_user_id = $1
 
 A draft still in progress is never public, regardless of who asks — that part hasn't changed; what changed is how much of a *completed* certificate a non-party actually gets to see.
 
-## Storage as an interface, not a decision
+### Storage as an interface, not a decision
 
 Uploaded photos, signature PNGs, and generated certificate PDFs currently live on the droplet's disk, on a mounted volume so they survive a redeploy. But nothing in the route handlers knows that:
 
@@ -164,7 +166,7 @@ export interface Storage {
 
 `LocalDiskStorage` is the only implementation today. The day this needs to move to S3 or R2 — for redundancy, or because a single droplet's disk stops being enough — that's a new class behind the same three methods, not a rewrite of every place a file gets touched.
 
-## Hosting: deliberately boring
+### Hosting: deliberately boring
 
 There's no Kubernetes here, no managed queue, no serverless functions. Handovha runs as a single Node process under systemd, on one $6/month DigitalOcean droplet, behind nginx terminating TLS via certbot. Postgres runs on the same box. A deploy is `npm run build`, rsync the build output over, `npm ci --production`, restart the service, then poll `/ready` until it's healthy.
 
@@ -172,10 +174,17 @@ That droplet runs more than one app — a second, unrelated tool shares it — a
 
 For the traffic this actually gets, that's not a compromise; it's the appropriately-sized amount of infrastructure. The interesting failure modes here are about data integrity — a signature meaning what it says it means — not about scaling a fleet of pods. Spending engineering effort on the latter before the former is solid would have been optimizing the wrong thing.
 
-## What I'd revisit
+## Practical Application
 
-Signing is same-device and sequential today — both parties pass one phone back and forth. It works for the landlord-tenant, driver-handoff case this was built for first, but it doesn't cover a remote handover where the two parties aren't in the same room. That's the next real feature, not a fix: a second signing link, emailed to the other party, rather than a shared screen.
+If you're building something where two parties confirm a state and a third party might verify it later — a delivery, a return, a handoff of any kind:
 
----
+- **Don't default to accounts.** If the product's entire pitch is "no app, no login," a magic link that creates identity on first use covers what a password-based account would, with none of the friction.
+- **Scope a signature to exactly what it covers, and invalidate it on any change to those fields.** A signature that can silently drift from what it originally attested to isn't a signature — it's decoration.
+- **Design public verification around "prove it happened," not "expose the record."** A hash of the sensitive value often gives a stranger everything they legitimately need (tamper-evidence) without handing over the value itself.
+- **Size the infrastructure to the actual risk.** If your hardest failure modes are data-integrity bugs rather than scale, a single small server is the right amount of infrastructure — don't reach for more because it looks more serious.
+
+## Final Takeaway
+
+A certificate is only as trustworthy as the guarantee behind the word "signed." Handovha's entire design is built around making that one guarantee unbreakable — a signature that can't silently outlive the state it attested to, and a public page that proves authenticity without oversharing — while keeping everything else, from accounts to hosting, as simple as the problem actually allows.
 
 If you want to see it: **[handovha.com](https://handovha.com)**.

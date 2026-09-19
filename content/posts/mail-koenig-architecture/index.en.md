@@ -20,32 +20,34 @@ hiddenFromHomePage: false
 hiddenFromSearch: false
 ---
 
-Sending an email campaign to a few thousand people looks simple until the third recipient's inbox provider rate-limits you mid-send, the fourth bounces permanently, and the process doing the sending gets killed by a deploy halfway through. **Mail Koenig** is a small campaign tool I built to send exactly that kind of batch — and the interesting part of it isn't the campaign editor, it's the fact that none of the above needed a message queue.
+Sending an email campaign to a few thousand people looks simple until the third recipient's inbox provider rate-limits you mid-send, the fourth bounces permanently, and the process doing the sending gets killed by a deploy halfway through.
 
 <!--more-->
 
-There's no Redis, no SQS, no BullMQ. The entire send pipeline — queueing, claiming, retrying, recovering from a crash — is a handful of SQL statements against one Postgres table, run in a loop.
+## Bottom Line
 
-## What I Built
+**Mail Koenig** sends exactly that kind of batch, and none of it needed a message queue. There's no Redis, no SQS, no BullMQ. The entire send pipeline — queueing, claiming, retrying, recovering from a crash — is a handful of SQL statements against one Postgres table, run in a loop. A correct job queue, for a workload this size, is mostly a concurrency-safe `UPDATE ... RETURNING` and a bit of discipline about error classification, not a new piece of infrastructure.
+
+## Why It Matters
+
+"Add a message queue" is often the reflexive answer the moment background jobs come up, even before checking whether the database already sitting there can do the job. That reflex costs real operational weight — another service to run, monitor, and reason about — for requirements (retry, crash recovery, idempotent processing) that Postgres already handles well with well-understood SQL patterns. Knowing those patterns means not paying for infrastructure you don't need yet, and knowing precisely what would actually force your hand later.
+
+## Evidence & Explanation
+
+### What I Built
 
 Mail Koenig lets someone import contacts, write a campaign, and send it from their own verified domain (or a shared one while they're getting started). A background worker process picks up campaigns marked for sending and works through their recipients in batches, calling Mailgun to actually deliver each batch and recording every delivery event — opened, clicked, bounced, complained — as it comes back over a webhook.
 
 The part worth writing up is the worker: how a Postgres table plays the role a job queue normally would, without pretending to be one.
 
-## How It Works (The Short Version)
+### How It Works (The Short Version)
 
 1. Sending a campaign inserts one `campaign_recipients` row per eligible contact, `status = 'pending'`
 2. A worker loop polls every few seconds: claim a batch of pending rows for a campaign, hand them to Mailgun as one batch-send call, mark the outcome
 3. A failure gets classified as retryable or not; retryable ones get a backoff delay and another attempt, up to five
 4. Mailgun's delivery webhooks (delivered, opened, bounced, complained, unsubscribed) update the same rows and, for anything suppression-worthy, the contact itself
 
-If you want the mechanics — how a plain `UPDATE ... RETURNING` becomes a safe multi-worker queue, and what "safe" actually has to mean when the whole thing can be killed at any line — the rest of this goes into that.
-
----
-
-# Technical Deep-Dive
-
-## The claim query is the queue
+### The claim query is the queue
 
 There's no separate broker holding "jobs." A recipient row's `status` column *is* the job state, and claiming a batch to work on is one query:
 
@@ -68,7 +70,7 @@ RETURNING cr.id, cr.campaign_id, cr.contact_id, cr.email, cr.name, cr.attempts, 
 
 `FOR UPDATE SKIP LOCKED` is what makes this safe to run concurrently: if a second worker process ever runs this same query at the same moment, Postgres has each one skip rows the other has already locked instead of blocking on them or double-claiming them. Today there's exactly one worker process, so nothing is actually racing — but the query is correct for more than one without needing to become a different query later. The claim is scoped to a single campaign per call, too, so a batch never mixes recipients from two different campaigns: each Mailgun batch-send call needs one sender/domain, and mixing campaigns would mean mixing senders.
 
-## Every batch outcome is one of three things
+### Every batch outcome is one of three things
 
 The worker loop itself is almost boring on purpose:
 
@@ -120,7 +122,7 @@ Getting this classification wrong in either direction is a real failure mode, no
 
 The jitter on the backoff matters at the batch level specifically: if several batches fail at once (a Mailgun-wide blip), a fixed exponential delay would bring them all back at exactly the same moment and immediately re-trip whatever caused the first failure. Spreading that by up to 20% is cheap insurance against re-creating the exact spike that just happened.
 
-## A worker that gets killed mid-batch shouldn't lose the row
+### A worker that gets killed mid-batch shouldn't lose the row
 
 The failure mode that's easy to forget about: the worker process itself dies — OOM, a deploy restart, `kill -9` — *between* claiming a batch and recording what happened to it. Without a fix, those rows sit in `status = 'sending'` forever, locked by a worker ID that no longer exists, and the campaign never finishes.
 
@@ -132,7 +134,7 @@ WHERE status = 'sending' AND locked_at < now() - ($1 * interval '1 millisecond')
 
 Run at the top of every loop iteration with a ten-minute timeout, this resets anything that's been "sending" for too long back to pending, to be claimed again. That's an honest at-least-once guarantee, not exactly-once: if the worker crashed *after* Mailgun actually accepted the batch but *before* the row got marked sent, reclaiming it means a rare duplicate send. That's the correct tradeoff here — a duplicate marketing email is an annoyance; a campaign that silently stalls at 40% sent because one process hiccuped is a support ticket. Which failure mode you're willing to tolerate is a real design decision, not a default you get for free, and it's worth being explicit about which one you picked and why.
 
-## Eligibility is checked twice, on purpose
+### Eligibility is checked twice, on purpose
 
 A campaign snapshots its recipient list once, at send time — but for a large campaign, sending can take a while, and a contact's status can change mid-send: they unsubscribe from a *different* campaign, or bounce somewhere else, in the minutes between when the batch was claimed and when it actually goes out. So eligibility gets a live re-check immediately before the Mailgun call, not just once at campaign creation:
 
@@ -153,7 +155,7 @@ async function partitionByEligibility(pool: Pool, rows: ClaimedRecipient[]) {
 
 Anyone who dropped out of eligibility since being claimed is marked `skipped`, not sent to, and not retried. This is the same instinct as the claim query's `FOR UPDATE SKIP LOCKED`: don't trust that the world still looks the way it did when you first read it — check again right before the action that can't be undone.
 
-## Webhooks retry, so recording an event has to be idempotent
+### Webhooks retry, so recording an event has to be idempotent
 
 Mailgun retries a webhook delivery whenever it doesn't get a prompt `200` back — meaning the same delivery event can arrive at this app more than once. Recording it twice would double-count opens and clicks and, worse, could re-trigger the suppression logic redundantly. The fix is a unique constraint doing the real work, not application-level "have I seen this before" bookkeeping:
 
@@ -165,6 +167,19 @@ ON CONFLICT (mailgun_event_id) DO NOTHING
 
 If the insert didn't actually insert anything (`rowCount === 0`), every side effect downstream — advancing `campaign_recipients.status`, suppressing the contact — is skipped too, inside the same transaction. A duplicate delivery becomes a genuine no-op, not "recorded twice but only acted on once" (which would still leave the event log wrong). And a bounce, complaint, or unsubscribe on *any* campaign suppresses that contact from every future one — a stronger guarantee than relying solely on Mailgun's own suppression list, and the actual enforcement point for "don't email someone who bounced."
 
-## What I'd revisit
+### What I'd revisit
 
 This whole design leans on there being one worker process. `FOR UPDATE SKIP LOCKED` means a second worker could join safely today with zero code changes. Crash recovery already has two independent layers, not one: the worker runs under its own `systemd` unit with `Restart=always` and a five-second backoff, so it's back up within seconds whether it crashed or exited cleanly (a plain `Restart=on-failure` would have left it down after something as ordinary as a `SIGTERM`) — that part isn't waiting for the next deploy. But the fresh process that comes back has no memory of which rows its dead predecessor had claimed; that's what the ten-minute stale-lock reclaim actually fixes, regardless of how quickly `systemd` restarts things. For the volume this sends today, that's the right amount of infrastructure. If that changes, the honest next step isn't reaching for a message broker — it's just running a second worker process against the same table and letting the claim query do what it was already written to do.
+
+## Practical Application
+
+Before reaching for a message broker on your next background-job problem, check whether these four patterns already cover what you need:
+
+- **Claiming**: `FOR UPDATE SKIP LOCKED` on a status column, scoped to whatever unit of work shouldn't mix (here, one campaign per claim) — this is what makes a plain table safe for more than one worker without a broker in between.
+- **Retry classification**: a pure function that says retryable-or-not per error, with jittered exponential backoff — get this wrong and you either hammer a dead endpoint or silently drop recoverable work.
+- **Crash recovery**: assume the process dies mid-job, and build a stale-lock reclaim in from day one. Decide explicitly whether you're promising at-least-once or exactly-once — a reclaim timeout gives you the former cheaply; the latter costs much more and often isn't worth it.
+- **Idempotent event ingestion**: anything that retries deliveries (webhooks, at-least-once queues) needs a real unique constraint backing your dedupe, not application-level "have I seen this" logic that can race itself.
+
+## Final Takeaway
+
+The sophistication people associate with a "real" job queue is mostly a handful of concurrency-safe SQL patterns, not a piece of infrastructure you're missing. You almost certainly already have the database that can do this — the work is writing the few queries that treat it as one, and being explicit about the failure mode you're choosing to tolerate.

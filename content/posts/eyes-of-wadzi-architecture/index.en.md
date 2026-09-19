@@ -20,38 +20,21 @@ hiddenFromHomePage: false
 hiddenFromSearch: false
 ---
 
-Someone close to me is a photographer. She needed a website to show her work — somewhere people could browse her photos, organised into galleries, without paying a monthly subscription.
-
-The catch? She's not technical. At all. She doesn't want to open a terminal, learn a code editor, or think about "deploying" anything. She just wants to put photos in a folder and have them show up on a website.
+Someone close to me is a photographer who needed a portfolio site but doesn't want to touch a terminal, a code editor, or a "deploy" button.
 
 <!--more-->
 
-I looked at the usual options. **Squarespace** and **SmugMug** charge monthly fees and lock you into their platform. Self-hosted galleries need a server to maintain. Static site generators like Hugo are free, but they expect you to use git and the command line to publish — a non-starter for someone who just wants to drag and drop.
+## Bottom Line
 
-The gap was clear: nothing sat between **"I just want to drag photos into a folder"** and **"here's your website"**.
+Google Drive — a tool she already uses daily — can be the entire CMS. A scheduled pipeline watches her Drive folders, and when something changes it downloads the photos, rebuilds the site, and publishes it. She drags photos into a folder; that's the whole workflow. The site costs nothing to run and needs no ongoing maintenance from either of us.
 
-## What I Built
+## Why It Matters
 
-The answer turned out to be something she already uses every day: **Google Drive**.
+The usual choices here are both bad for a non-technical user: paid platforms like Squarespace or SmugMug charge monthly fees and lock you into their editor, while free static site generators assume you're comfortable with git and a command line to publish anything. Neither fits someone whose actual requirement is "put files in a folder I already understand." Building a small sync pipeline instead of picking one of those defaults is the difference between a site she can maintain herself for years and one that quietly breaks the moment she needs to add a photo and I'm not available.
 
-She creates folders in Drive — one per gallery — and drops photos into them. That's it. That's her entire workflow. Behind the scenes, an automated pipeline checks Drive for changes every few minutes, downloads any new or updated photos, builds a website from them, and publishes it. She never touches code, never opens a terminal, and never runs a deploy command.
+## Evidence & Explanation
 
-The website is completely free to host, loads fast, and looks good on any device. The whole thing costs exactly nothing to run.
-
-## How It Works (The Short Version)
-
-1. She organises photos into folders on Google Drive
-2. Every few minutes, a scheduled job checks if anything changed
-3. If it did, the pipeline downloads the photos, generates the site, and publishes it
-4. The website updates itself — no human intervention needed
-
-If you're curious about the nuts and bolts, the rest of this post goes deep into the architecture and technical decisions. If you're not, the summary above is really all there is to it.
-
----
-
-# Technical Deep-Dive
-
-## The Problem
+### The Problem
 
 A photographer needs an online portfolio. The requirements sound simple:
 
@@ -65,7 +48,7 @@ SmugMug) cost money and lock you in. Self-hosted galleries need a server. Static
 site generators need technical knowledge to publish. The gap is between **"I just
 want to drag photos into a folder"** and **"here's your website"**.
 
-## The Solution
+### The Solution
 
 Google Drive becomes the CMS. The photographer manages folders and photos in
 Drive — a tool she already uses daily. A scheduled pipeline detects changes,
@@ -74,19 +57,19 @@ with code, git, or the command line.
 
 {{< figure src="pipeline-overview.svg" alt="Pipeline overview — from Google Drive to GitHub Pages" >}}
 
-## System Architecture
+### System Architecture
 
-### Component Overview
+#### Component Overview
 
 {{< figure src="github-actions-workflow.svg" alt="GitHub Actions workflow — check, build, deploy pipeline" >}}
 
-### Trigger Schedule
+#### Trigger Schedule
 
 The cron schedule targets the hours the photographer is most likely editing:
 
 {{< figure src="trigger-schedule.svg" alt="Trigger schedule — morning and evening windows" >}}
 
-### The Check Job (Lightweight)
+#### The Check Job (Lightweight)
 
 Runs on schedule only. Purpose: avoid full builds when nothing changed.
 
@@ -94,21 +77,21 @@ Runs on schedule only. Purpose: avoid full builds when nothing changed.
 
 The timestamp is persisted between runs via GitHub Actions cache.
 
-### The Build Job (Full)
+#### The Build Job (Full)
 
 {{< figure src="build-job-steps.svg" alt="Build job steps — from install to artifact upload" >}}
 
-### The Deploy Job
+#### The Deploy Job
 
 Deploys the artifact to GitHub Pages. Runs if and only if the build
 job succeeded. Uses `always()` condition to handle the case where the
 check job was skipped (push/manual triggers).
 
-## Data Flow: Drive Folder to Web Page
+### Data Flow: Drive Folder to Web Page
 
 {{< figure src="data-flow.svg" alt="Data flow — from Drive folder to web page" >}}
 
-### Filename Sanitisation
+#### Filename Sanitisation
 
 Drive filenames can contain spaces, uppercase, and special characters
 (`Copy of Copy of IMG-20241116-WA0011.jpg`). The sync script normalises them:
@@ -122,7 +105,7 @@ Drive filenames can contain spaces, uppercase, and special characters
 Rule: lowercase, spaces to hyphens. This prevents URL encoding issues and
 keeps Hugo's image processing happy.
 
-## Repository Structure
+### Repository Structure
 
 ```
 eyes-of-wadzi/
@@ -164,7 +147,7 @@ eyes-of-wadzi/
 generated at build time from Google Drive. The `.gitignore` ensures it is
 never accidentally committed.
 
-## Theme Architecture
+### Theme Architecture
 
 The site uses the [Galleries Deluxe](https://github.com/bep/galleriesdeluxe)
 Hugo theme, imported as a Hugo Module (not a git submodule).
@@ -175,7 +158,7 @@ Hugo theme, imported as a Hugo Module (not a git submodule).
 | &emsp;gallerydeluxe | Single gallery renderer, Pig.js grid |
 | &emsp;hugo-mod-misc/common-partials | SEO, Open Graph |
 
-### Theme Overrides
+#### Theme Overrides
 
 The project overrides specific theme files to add caption support:
 
@@ -186,13 +169,13 @@ The project overrides specific theme files to add caption support:
 | `js/gallerydeluxe/src/index.js` | Display caption in lightbox when image title differs from filename |
 | `scss/galleriesdeluxe/vars-custom.scss` | Style the caption overlay |
 
-### Image Processing Pipeline
+#### Image Processing Pipeline
 
 Hugo processes each source image into multiple sizes for responsive loading:
 
 {{< figure src="image-processing.svg" alt="Image processing pipeline — responsive sizes from source" >}}
 
-## Security Model
+### Security Model
 
 {{< figure src="security-model.svg" alt="Security model — service account to GitHub Pages" >}}
 
@@ -203,7 +186,7 @@ Hugo processes each source image into multiple sizes for responsive loading:
 - The deployed site is fully static -- no server, no API, no attack surface
 - GitHub Pages provides HTTPS by default
 
-## Caching Strategy
+### Caching Strategy
 
 Four caches reduce build time and API usage:
 
@@ -217,7 +200,7 @@ Four caches reduce build time and API usage:
 The sync timestamp cache is the most impactful: it turns a ~40s build into
 a ~10s no-op check on every 5-minute cron run when nothing has changed.
 
-## Secrets & Configuration
+### Secrets & Configuration
 
 Two GitHub Actions secrets are required:
 
@@ -229,7 +212,7 @@ Two GitHub Actions secrets are required:
 The folder ID comes from the Drive URL:
 `https://drive.google.com/drive/folders/<THIS_PART>`
 
-## Cost
+### Cost
 
 Everything in this stack is free:
 
@@ -243,3 +226,16 @@ Everything in this stack is free:
 
 At ~10s per check and 5-minute intervals over 7 hours/day, scheduled runs
 consume roughly **7 x 12 x 10s / 60 = ~14 minutes/day** of Actions time.
+
+## Practical Application
+
+If you're building something similar for a non-technical stakeholder, the pattern generalises:
+
+- **Find the storage they already trust.** Drive, Dropbox, a shared folder — whatever they already use daily is a better CMS for them than any admin panel you could build.
+- **Make change detection cheap and separate from the build.** A ~10-second check job that skips 95% of scheduled runs is what makes polling every few minutes affordable instead of wasteful.
+- **Scope credentials to exactly what the pipeline needs.** A read-only service account on one shared folder, injected as an environment variable and never written to disk, means a leaked CI log can't expose anything beyond that one folder.
+- **Keep generated content out of version control.** Anything the pipeline can regenerate from the source of truth (Drive, in this case) doesn't belong in git — `.gitignore` it and rebuild it every run.
+
+## Final Takeaway
+
+The real engineering decision here wasn't which static site generator or theme to use — it was recognising that the actual problem was "avoid needing a CMS at all," not "build a good one." Once that reframing happened, the rest — Drive as storage, a cheap change-detection step, a fully static and free hosting target — followed naturally, and the result needs zero maintenance from either of us going forward.
