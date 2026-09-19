@@ -1,0 +1,60 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 800 420" font-family="'SF Mono','Fira Code','Cascadia Code',monospace">
+  <style>
+    .box { fill:#1e1e2e; stroke:#89b4fa; stroke-width:1.5; }
+    .box-pg { fill:#1e1e2e; stroke:#a6e3a1; stroke-width:1.5; }
+    .box-perim { fill:none; stroke:#f38ba8; stroke-width:1.5; stroke-dasharray:5 3; }
+    .label-c { fill:#cdd6f4; text-anchor:middle; font-size:12.5px; font-weight:bold; }
+    .note { fill:#a6adc8; font-size:10.5px; text-anchor:middle; }
+    .heading { fill:#f9e2af; font-size:14px; font-weight:bold; text-anchor:middle; }
+    .arrow { stroke:#89b4fa; stroke-width:1.5; fill:none; marker-end:url(#a10); }
+  </style>
+  <defs>
+    <marker id="a10" markerWidth="8" markerHeight="6" refX="8" refY="3" orient="auto">
+      <polygon points="0 0, 8 3, 0 6" fill="#89b4fa"/>
+    </marker>
+  </defs>
+  <rect width="800" height="420" fill="#181825" rx="12"/>
+  <text x="400" y="26" class="heading">One droplet ($6/mo tier), one YAML file describing all of it</text>
+
+  <rect x="30" y="45" width="740" height="350" rx="10" class="box-perim"/>
+  <text x="60" y="66" class="note" fill="#f38ba8" text-anchor="start">ufw (limit SSH, allow Nginx Full) + fail2ban (progressive bans) + unattended-upgrades</text>
+
+  <!-- nginx -->
+  <rect x="55" y="80" width="690" height="90" rx="8" class="box"/>
+  <text x="400" y="102" class="label-c">nginx — one server block per app's domains</text>
+  <text x="400" y="122" class="note">per-path rate-limit zones (limit_req_zone) · certbot-issued TLS, edited in place</text>
+  <text x="400" y="140" class="note">00-catchall.conf: bare-IP / unmatched Host → 301 to primary domain</text>
+  <text x="400" y="158" class="note" font-size="9.5">handovha.com, www., app. → :3000        (mail_king has no domain yet → catch-all)</text>
+
+  <!-- systemd units -->
+  <rect x="55" y="185" width="330" height="110" rx="8" class="box"/>
+  <text x="220" y="207" class="label-c">handover.service</text>
+  <text x="220" y="225" class="note">User=deploy · :3000</text>
+  <text x="220" y="241" class="note">ProtectSystem=strict</text>
+  <text x="220" y="257" class="note">ReadWritePaths=/srv/handover</text>
+  <text x="220" y="273" class="note">           /data/handover/uploads</text>
+
+  <rect x="415" y="185" width="330" height="110" rx="8" class="box"/>
+  <text x="580" y="207" class="label-c">mail_king.service + mail_king-worker.service</text>
+  <text x="580" y="225" class="note">User=deploy · :3001</text>
+  <text x="580" y="241" class="note">ProtectSystem=strict, NoNewPrivileges</text>
+  <text x="580" y="257" class="note">worker: Restart=always (any exit,</text>
+  <text x="580" y="273" class="note">not just failure)</text>
+
+  <line x1="220" y1="185" x2="220" y2="170" class="arrow"/>
+  <line x1="580" y1="185" x2="580" y2="170" class="arrow"/>
+
+  <!-- shared data -->
+  <rect x="55" y="305" width="330" height="75" rx="8" class="box-pg"/>
+  <text x="220" y="327" class="label-c" fill="#a6e3a1">Postgres — one instance</text>
+  <text x="220" y="345" class="note">role + db per app (handover, mail_king)</text>
+  <text x="220" y="361" class="note">infra/db.sh: pg_dump before every deploy</text>
+
+  <rect x="415" y="305" width="330" height="75" rx="8" class="box-pg"/>
+  <text x="580" y="327" class="label-c" fill="#a6e3a1">/data — attached volume</text>
+  <text x="580" y="345" class="note">/data/handover/uploads (mounted, survives redeploys)</text>
+  <text x="580" y="361" class="note">shared across apps; each gets its own subdir</text>
+
+  <line x1="220" y1="295" x2="220" y2="303" class="arrow"/>
+  <line x1="580" y1="295" x2="580" y2="303" class="arrow"/>
+</svg>
