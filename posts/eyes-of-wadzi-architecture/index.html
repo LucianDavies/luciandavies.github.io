@@ -14,40 +14,40 @@ with code, git, or the command line.</p><figure><img src=pipeline-overview.svg a
 job succeeded. Uses <code>always()</code> condition to handle the case where the
 check job was skipped (push/manual triggers).</p><h3 id=data-flow-drive-folder-to-web-page>Data Flow: Drive Folder to Web Page</h3><figure><img src=data-flow.svg alt="Data flow — from Drive folder to web page"></figure><h4 id=filename-sanitisation>Filename Sanitisation</h4><p>Drive filenames can contain spaces, uppercase, and special characters
 (<code>Copy of Copy of IMG-20241116-WA0011.jpg</code>). The sync script normalises them:</p><table><thead><tr><th>Original (Drive)</th><th>Saved as</th></tr></thead><tbody><tr><td><code>Copy of Copy of IMG-20241116.jpg</code></td><td><code>copy-of-copy-of-img-20241116.jpg</code></td></tr><tr><td><code>My Photo (2).JPG</code></td><td><code>my-photo-(2).jpg</code></td></tr><tr><td><code>sunset.jpg</code></td><td><code>sunset.jpg</code></td></tr></tbody></table><p>Rule: lowercase, spaces to hyphens. This prevents URL encoding issues and
-keeps Hugo&rsquo;s image processing happy.</p><h3 id=repository-structure>Repository Structure</h3><div class=highlight><pre tabindex=0 style=color:#93a1a1;background-color:#002b36;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-gdscript3 data-lang=gdscript3><span style=display:flex><span>eyes<span style=color:#719e07>-</span>of<span style=color:#719e07>-</span>wadzi<span style=color:#719e07>/</span>
-</span></span><span style=display:flex><span><span style=color:#719e07>|</span>
-</span></span><span style=display:flex><span><span style=color:#719e07>+--</span> <span style=color:#719e07>.</span>github<span style=color:#719e07>/</span>workflows<span style=color:#719e07>/</span>
-</span></span><span style=display:flex><span><span style=color:#719e07>|</span>     hugo<span style=color:#719e07>.</span>yml                 CI<span style=color:#719e07>/</span>CD pipeline (check <span style=color:#719e07>-&gt;</span> build <span style=color:#719e07>-&gt;</span> deploy)
-</span></span><span style=display:flex><span><span style=color:#719e07>|</span>
-</span></span><span style=display:flex><span><span style=color:#719e07>+--</span> assets<span style=color:#719e07>/</span>
-</span></span><span style=display:flex><span><span style=color:#719e07>|</span>     js<span style=color:#719e07>/</span>gallerydeluxe<span style=color:#719e07>/</span>src<span style=color:#719e07>/</span>
-</span></span><span style=display:flex><span><span style=color:#719e07>|</span>       index<span style=color:#719e07>.</span>js               Lightbox caption logic (theme override)
-</span></span><span style=display:flex><span><span style=color:#719e07>|</span>       helpers<span style=color:#719e07>.</span>js             Gallery helpers (copied from theme)
-</span></span><span style=display:flex><span><span style=color:#719e07>|</span>       pig<span style=color:#719e07>.</span>js                 Justified image grid (copied from theme)
-</span></span><span style=display:flex><span><span style=color:#719e07>|</span>     scss<span style=color:#719e07>/</span>galleriesdeluxe<span style=color:#719e07>/</span>
-</span></span><span style=display:flex><span><span style=color:#719e07>|</span>       vars<span style=color:#719e07>-</span>custom<span style=color:#719e07>.</span>scss       Caption styling
-</span></span><span style=display:flex><span><span style=color:#719e07>|</span>
-</span></span><span style=display:flex><span><span style=color:#719e07>+--</span> content<span style=color:#719e07>/</span>galleries<span style=color:#719e07>/</span>         GENERATED AT BUILD TIME (gitignored)
-</span></span><span style=display:flex><span><span style=color:#719e07>|</span>     _index<span style=color:#719e07>.</span>md                Gallery listing page
-</span></span><span style=display:flex><span><span style=color:#719e07>|</span>     spain<span style=color:#719e07>/</span>
-</span></span><span style=display:flex><span><span style=color:#719e07>|</span>       index<span style=color:#719e07>.</span>md               Gallery front matter <span style=color:#719e07>+</span> body
-</span></span><span style=display:flex><span><span style=color:#719e07>|</span>       sunset<span style=color:#719e07>.</span>jpg             Downloaded from Drive
-</span></span><span style=display:flex><span><span style=color:#719e07>|</span>       market<span style=color:#719e07>.</span>jpg
-</span></span><span style=display:flex><span><span style=color:#719e07>|</span>
-</span></span><span style=display:flex><span><span style=color:#719e07>+--</span> layouts<span style=color:#719e07>/</span>partials<span style=color:#719e07>/</span>
-</span></span><span style=display:flex><span><span style=color:#719e07>|</span>     gallerydeluxe<span style=color:#719e07>/</span>
-</span></span><span style=display:flex><span><span style=color:#719e07>|</span>       init<span style=color:#719e07>.</span>html              Adds <span style=color:#2aa198>&#34;title&#34;</span> to image JSON (captions)
-</span></span><span style=display:flex><span><span style=color:#719e07>|</span>     galleriesdeluxe<span style=color:#719e07>/</span>
-</span></span><span style=display:flex><span><span style=color:#719e07>|</span>       header<span style=color:#719e07>.</span>html            Simplified nav (gallery list only)
-</span></span><span style=display:flex><span><span style=color:#719e07>|</span>
-</span></span><span style=display:flex><span><span style=color:#719e07>+--</span> scripts<span style=color:#719e07>/</span>
-</span></span><span style=display:flex><span><span style=color:#719e07>|</span>     sync_drive<span style=color:#719e07>.</span>py            Drive <span style=color:#719e07>-&gt;</span> content<span style=color:#719e07>/</span>galleries<span style=color:#719e07>/</span> generator
-</span></span><span style=display:flex><span><span style=color:#719e07>|</span>     check_drive_changes<span style=color:#719e07>.</span>py   Lightweight change detection
-</span></span><span style=display:flex><span><span style=color:#719e07>|</span>
-</span></span><span style=display:flex><span><span style=color:#719e07>+--</span> hugo<span style=color:#719e07>.</span>toml                  Site config (theme, image processing)
-</span></span><span style=display:flex><span><span style=color:#719e07>+--</span> requirements<span style=color:#719e07>.</span>txt           Python deps (google<span style=color:#719e07>-</span>api<span style=color:#719e07>-</span>python<span style=color:#719e07>-</span>client, google<span style=color:#719e07>-</span>auth)
-</span></span><span style=display:flex><span><span style=color:#719e07>+--</span> <span style=color:#719e07>.</span>gitignore                 Excludes content<span style=color:#719e07>/</span>galleries<span style=color:#719e07>/</span>
-</span></span></code></pre></div><p><strong>Key point:</strong> <code>content/galleries/</code> does not exist in git. It is entirely
+keeps Hugo&rsquo;s image processing happy.</p><h3 id=repository-structure>Repository Structure</h3><pre tabindex=0><code>eyes-of-wadzi/
+|
++-- .github/workflows/
+|     hugo.yml                 CI/CD pipeline (check -&gt; build -&gt; deploy)
+|
++-- assets/
+|     js/gallerydeluxe/src/
+|       index.js               Lightbox caption logic (theme override)
+|       helpers.js             Gallery helpers (copied from theme)
+|       pig.js                 Justified image grid (copied from theme)
+|     scss/galleriesdeluxe/
+|       vars-custom.scss       Caption styling
+|
++-- content/galleries/         GENERATED AT BUILD TIME (gitignored)
+|     _index.md                Gallery listing page
+|     spain/
+|       index.md               Gallery front matter + body
+|       sunset.jpg             Downloaded from Drive
+|       market.jpg
+|
++-- layouts/partials/
+|     gallerydeluxe/
+|       init.html              Adds &#34;title&#34; to image JSON (captions)
+|     galleriesdeluxe/
+|       header.html            Simplified nav (gallery list only)
+|
++-- scripts/
+|     sync_drive.py            Drive -&gt; content/galleries/ generator
+|     check_drive_changes.py   Lightweight change detection
+|
++-- hugo.toml                  Site config (theme, image processing)
++-- requirements.txt           Python deps (google-api-python-client, google-auth)
++-- .gitignore                 Excludes content/galleries/
+</code></pre><p><strong>Key point:</strong> <code>content/galleries/</code> does not exist in git. It is entirely
 generated at build time from Google Drive. The <code>.gitignore</code> ensures it is
 never accidentally committed.</p><h3 id=theme-architecture>Theme Architecture</h3><p>The site uses the <a href=https://github.com/bep/galleriesdeluxe><img src=/icons/github.png alt width=16 height=16 style=display:inline;vertical-align:-3px;margin-right:4px>Galleries Deluxe</a>
 <a href=https://gohugo.io><img src=/icons/hugo.png alt width=16 height=16 style=display:inline;vertical-align:-3px;margin-right:4px>Hugo</a> theme, imported as a Hugo Module (not a git submodule).</p><table><thead><tr><th>Module</th><th>Role</th></tr></thead><tbody><tr><td><strong>galleriesdeluxe</strong></td><td>Multi-gallery wrapper</td></tr><tr><td> gallerydeluxe</td><td>Single gallery renderer, Pig.js grid</td></tr><tr><td> hugo-mod-misc/common-partials</td><td>SEO, Open Graph</td></tr></tbody></table><h4 id=theme-overrides>Theme Overrides</h4><p>The project overrides specific theme files to add caption support:</p><table><thead><tr><th>Theme File</th><th>Override Purpose</th></tr></thead><tbody><tr><td><code>partials/gallerydeluxe/init.html</code></td><td>Add &ldquo;title&rdquo; field to image JSON so captions are available in JS</td></tr><tr><td><code>partials/galleriesdeluxe/header.html</code></td><td>Show flat gallery list in nav instead of category hierarchy</td></tr><tr><td><code>js/gallerydeluxe/src/index.js</code></td><td>Display caption in lightbox when image title differs from filename</td></tr><tr><td><code>scss/galleriesdeluxe/vars-custom.scss</code></td><td>Style the caption overlay</td></tr></tbody></table><h4 id=image-processing-pipeline>Image Processing Pipeline</h4><p>Hugo processes each source image into multiple sizes for responsive loading:</p><figure><img src=image-processing.svg alt="Image processing pipeline — responsive sizes from source"></figure><h3 id=security-model>Security Model</h3><figure><img src=security-model.svg alt="Security model — service account to GitHub Pages"></figure><p><strong>Key security properties:</strong></p><ul><li>Service account has <strong>read-only</strong> access to one shared folder</li><li>No human credentials in the pipeline</li><li>Credentials passed via environment variable, never written to disk in CI</li><li>The deployed site is fully static &ndash; no server, no API, no attack surface</li><li>GitHub Pages provides HTTPS by default</li></ul><h3 id=caching-strategy>Caching Strategy</h3><p>Four caches reduce build time and API usage:</p><table><thead><tr><th>Cache</th><th>Key</th><th>Purpose</th></tr></thead><tbody><tr><td>pip packages</td><td><code>requirements.txt</code> hash</td><td>Skip pip install (~5s saved)</td></tr><tr><td>Hugo modules</td><td><code>go.sum</code> hash</td><td>Skip module download (~6s saved)</td></tr><tr><td>Hugo image cache</td><td>Built-in (4320h TTL)</td><td>Skip image reprocessing</td></tr><tr><td>Sync timestamp</td><td><code>drive-sync-timestamp</code></td><td>Skip builds when Drive unchanged</td></tr></tbody></table><p>The sync timestamp cache is the most impactful: it turns a ~40s build into
