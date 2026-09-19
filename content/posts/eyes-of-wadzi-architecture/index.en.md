@@ -241,3 +241,5 @@ If you're building something similar for a non-technical stakeholder, the patter
 ## Final Takeaway
 
 The real engineering decision here wasn't which static site generator or theme to use — it was recognising that the actual problem was "avoid needing a CMS at all," not "build a good one." Once that reframing happened, the rest — Drive as storage, a cheap change-detection step, a fully static and free hosting target — followed naturally, and the result needs zero maintenance from either of us going forward.
+
+If you want to see it: **<a href="https://coldsteam-studio.github.io/eyes-of-wadzi/"><img src="/icons/eyes-of-wadzi.svg" alt="" width="16" height="16" style="display:inline;vertical-align:-3px;margin-right:4px">Eyes of Wadzi</a>**.
