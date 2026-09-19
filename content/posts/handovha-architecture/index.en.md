@@ -43,7 +43,7 @@ The interesting engineering isn't the wizard — it's what has to be true undern
 - No password, ever — identity is a magic link sent to your email
 - Once signed, a field can't quietly change without invalidating the signature that covered it
 - The verification page has to work for a stranger with no account, while a draft-in-progress stays private
-- None of this needed a second server, a queue, or a database beyond Postgres
+- None of this needed a second server, a queue, or a database beyond <a href="https://www.postgresql.org"><img src="/icons/postgresql.png" alt="" width="16" height="16" style="display:inline;vertical-align:-3px;margin-right:4px">Postgres</a>
 
 ### How It Works (The Short Version)
 
@@ -168,7 +168,7 @@ export interface Storage {
 
 ### Hosting: deliberately boring
 
-There's no Kubernetes here, no managed queue, no serverless functions. Handovha runs as a single Node process under systemd, on one $6/month DigitalOcean droplet, behind nginx terminating TLS via certbot. Postgres runs on the same box. A deploy is `npm run build`, rsync the build output over, `npm ci --production`, restart the service, then poll `/ready` until it's healthy.
+There's no <a href="https://kubernetes.io"><img src="/icons/kubernetes.png" alt="" width="16" height="16" style="display:inline;vertical-align:-3px;margin-right:4px">Kubernetes</a> here, no managed queue, no serverless functions. Handovha runs as a single Node process under <a href="https://systemd.io"><img src="/icons/systemd.png" alt="" width="16" height="16" style="display:inline;vertical-align:-3px;margin-right:4px">systemd</a>, on one $6/month <a href="https://www.digitalocean.com"><img src="/icons/digitalocean.png" alt="" width="16" height="16" style="display:inline;vertical-align:-3px;margin-right:4px">DigitalOcean</a> droplet, behind <a href="https://nginx.org"><img src="/icons/nginx.png" alt="" width="16" height="16" style="display:inline;vertical-align:-3px;margin-right:4px">nginx</a> terminating TLS via <a href="https://certbot.eff.org"><img src="/icons/certbot.png" alt="" width="16" height="16" style="display:inline;vertical-align:-3px;margin-right:4px">certbot</a>. Postgres runs on the same box. A deploy is `npm run build`, rsync the build output over, `npm ci --production`, restart the service, then poll `/ready` until it's healthy.
 
 That droplet runs more than one app — a second, unrelated tool shares it — and both are described in one YAML manifest that the setup and deploy scripts both read, rather than each app carrying its own bespoke infrastructure.
 
@@ -187,4 +187,4 @@ If you're building something where two parties confirm a state and a third party
 
 A certificate is only as trustworthy as the guarantee behind the word "signed." Handovha's entire design is built around making that one guarantee unbreakable — a signature that can't silently outlive the state it attested to, and a public page that proves authenticity without oversharing — while keeping everything else, from accounts to hosting, as simple as the problem actually allows.
 
-If you want to see it: **[handovha.com](https://handovha.com)**.
+If you want to see it: **<a href="https://handovha.com"><img src="/icons/handovha.png" alt="" width="16" height="16" style="display:inline;vertical-align:-3px;margin-right:4px">handovha.com</a>**.

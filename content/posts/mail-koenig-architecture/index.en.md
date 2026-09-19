@@ -26,7 +26,7 @@ Sending an email campaign to a few thousand people looks simple until the third 
 
 ## Bottom Line
 
-**Mail Koenig** sends exactly that kind of batch, and none of it needed a message queue. There's no Redis, no SQS, no BullMQ. The entire send pipeline — queueing, claiming, retrying, recovering from a crash — is a handful of SQL statements against one Postgres table, run in a loop. A correct job queue, for a workload this size, is mostly a concurrency-safe `UPDATE ... RETURNING` and a bit of discipline about error classification, not a new piece of infrastructure.
+**Mail Koenig** sends exactly that kind of batch, and none of it needed a message queue. There's no <a href="https://redis.io"><img src="/icons/redis.png" alt="" width="16" height="16" style="display:inline;vertical-align:-3px;margin-right:4px">Redis</a>, no <a href="https://aws.amazon.com/sqs/"><img src="/icons/aws-sqs.png" alt="" width="16" height="16" style="display:inline;vertical-align:-3px;margin-right:4px">SQS</a>, no <a href="https://bullmq.io"><img src="/icons/bullmq.png" alt="" width="16" height="16" style="display:inline;vertical-align:-3px;margin-right:4px">BullMQ</a>. The entire send pipeline — queueing, claiming, retrying, recovering from a crash — is a handful of SQL statements against one <a href="https://www.postgresql.org"><img src="/icons/postgresql.png" alt="" width="16" height="16" style="display:inline;vertical-align:-3px;margin-right:4px">Postgres</a> table, run in a loop. A correct job queue, for a workload this size, is mostly a concurrency-safe `UPDATE ... RETURNING` and a bit of discipline about error classification, not a new piece of infrastructure.
 
 ## Why It Matters
 
@@ -36,7 +36,7 @@ Sending an email campaign to a few thousand people looks simple until the third 
 
 ### What I Built
 
-Mail Koenig lets someone import contacts, write a campaign, and send it from their own verified domain (or a shared one while they're getting started). A background worker process picks up campaigns marked for sending and works through their recipients in batches, calling Mailgun to actually deliver each batch and recording every delivery event — opened, clicked, bounced, complained — as it comes back over a webhook.
+Mail Koenig lets someone import contacts, write a campaign, and send it from their own verified domain (or a shared one while they're getting started). A background worker process picks up campaigns marked for sending and works through their recipients in batches, calling <a href="https://www.mailgun.com"><img src="/icons/mailgun.png" alt="" width="16" height="16" style="display:inline;vertical-align:-3px;margin-right:4px">Mailgun</a> to actually deliver each batch and recording every delivery event — opened, clicked, bounced, complained — as it comes back over a webhook.
 
 The part worth writing up is the worker: how a Postgres table plays the role a job queue normally would, without pretending to be one.
 
@@ -169,7 +169,7 @@ If the insert didn't actually insert anything (`rowCount === 0`), every side eff
 
 ### What I'd revisit
 
-This whole design leans on there being one worker process. `FOR UPDATE SKIP LOCKED` means a second worker could join safely today with zero code changes. Crash recovery already has two independent layers, not one: the worker runs under its own `systemd` unit with `Restart=always` and a five-second backoff, so it's back up within seconds whether it crashed or exited cleanly (a plain `Restart=on-failure` would have left it down after something as ordinary as a `SIGTERM`) — that part isn't waiting for the next deploy. But the fresh process that comes back has no memory of which rows its dead predecessor had claimed; that's what the ten-minute stale-lock reclaim actually fixes, regardless of how quickly `systemd` restarts things. For the volume this sends today, that's the right amount of infrastructure. If that changes, the honest next step isn't reaching for a message broker — it's just running a second worker process against the same table and letting the claim query do what it was already written to do.
+This whole design leans on there being one worker process. `FOR UPDATE SKIP LOCKED` means a second worker could join safely today with zero code changes. Crash recovery already has two independent layers, not one: the worker runs under its own <a href="https://systemd.io"><img src="/icons/systemd.png" alt="" width="16" height="16" style="display:inline;vertical-align:-3px;margin-right:4px">systemd</a> unit with `Restart=always` and a five-second backoff, so it's back up within seconds whether it crashed or exited cleanly (a plain `Restart=on-failure` would have left it down after something as ordinary as a `SIGTERM`) — that part isn't waiting for the next deploy. But the fresh process that comes back has no memory of which rows its dead predecessor had claimed; that's what the ten-minute stale-lock reclaim actually fixes, regardless of how quickly `systemd` restarts things. For the volume this sends today, that's the right amount of infrastructure. If that changes, the honest next step isn't reaching for a message broker — it's just running a second worker process against the same table and letting the claim query do what it was already written to do.
 
 ## Practical Application
 

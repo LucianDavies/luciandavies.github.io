@@ -26,11 +26,11 @@ Someone close to me is a photographer who needed a portfolio site but doesn't wa
 
 ## Bottom Line
 
-Google Drive — a tool she already uses daily — can be the entire CMS. A scheduled pipeline watches her Drive folders, and when something changes it downloads the photos, rebuilds the site, and publishes it. She drags photos into a folder; that's the whole workflow. The site costs nothing to run and needs no ongoing maintenance from either of us.
+<a href="https://drive.google.com"><img src="/icons/google-drive.png" alt="" width="16" height="16" style="display:inline;vertical-align:-3px;margin-right:4px">Google Drive</a> — a tool she already uses daily — can be the entire CMS. A scheduled pipeline watches her Drive folders, and when something changes it downloads the photos, rebuilds the site, and publishes it. She drags photos into a folder; that's the whole workflow. The site costs nothing to run and needs no ongoing maintenance from either of us.
 
 ## Why It Matters
 
-The usual choices here are both bad for a non-technical user: paid platforms like Squarespace or SmugMug charge monthly fees and lock you into their editor, while free static site generators assume you're comfortable with git and a command line to publish anything. Neither fits someone whose actual requirement is "put files in a folder I already understand." Building a small sync pipeline instead of picking one of those defaults is the difference between a site she can maintain herself for years and one that quietly breaks the moment she needs to add a photo and I'm not available.
+The usual choices here are both bad for a non-technical user: paid platforms like <a href="https://www.squarespace.com"><img src="/icons/squarespace.png" alt="" width="16" height="16" style="display:inline;vertical-align:-3px;margin-right:4px">Squarespace</a> or <a href="https://www.smugmug.com"><img src="/icons/smugmug.png" alt="" width="16" height="16" style="display:inline;vertical-align:-3px;margin-right:4px">SmugMug</a> charge monthly fees and lock you into their editor, while free static site generators assume you're comfortable with git and a command line to publish anything. Neither fits someone whose actual requirement is "put files in a folder I already understand." Building a small sync pipeline instead of picking one of those defaults is the difference between a site she can maintain herself for years and one that quietly breaks the moment she needs to add a photo and I'm not available.
 
 ## Evidence & Explanation
 
@@ -61,6 +61,8 @@ with code, git, or the command line.
 
 #### Component Overview
 
+The pipeline itself is a <a href="https://github.com/features/actions"><img src="/icons/github.png" alt="" width="16" height="16" style="display:inline;vertical-align:-3px;margin-right:4px">GitHub Actions</a> workflow with three jobs:
+
 {{< figure src="github-actions-workflow.svg" alt="GitHub Actions workflow — check, build, deploy pipeline" >}}
 
 #### Trigger Schedule
@@ -83,7 +85,7 @@ The timestamp is persisted between runs via GitHub Actions cache.
 
 #### The Deploy Job
 
-Deploys the artifact to GitHub Pages. Runs if and only if the build
+Deploys the artifact to <a href="https://pages.github.com"><img src="/icons/github.png" alt="" width="16" height="16" style="display:inline;vertical-align:-3px;margin-right:4px">GitHub Pages</a>. Runs if and only if the build
 job succeeded. Uses `always()` condition to handle the case where the
 check job was skipped (push/manual triggers).
 
@@ -149,8 +151,8 @@ never accidentally committed.
 
 ### Theme Architecture
 
-The site uses the [Galleries Deluxe](https://github.com/bep/galleriesdeluxe)
-Hugo theme, imported as a Hugo Module (not a git submodule).
+The site uses the <a href="https://github.com/bep/galleriesdeluxe"><img src="/icons/github.png" alt="" width="16" height="16" style="display:inline;vertical-align:-3px;margin-right:4px">Galleries Deluxe</a>
+<a href="https://gohugo.io"><img src="/icons/hugo.png" alt="" width="16" height="16" style="display:inline;vertical-align:-3px;margin-right:4px">Hugo</a> theme, imported as a Hugo Module (not a git submodule).
 
 | Module | Role |
 |---|---|

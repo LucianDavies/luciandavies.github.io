@@ -20,7 +20,7 @@ hiddenFromHomePage: false
 hiddenFromSearch: false
 ---
 
-Two production Node apps — Handovha and Mail Koenig — run on one DigitalOcean droplet at the smallest tier DigitalOcean sells. No Kubernetes, no Terraform, no PaaS.
+Two production Node apps — <a href="https://handovha.com"><img src="/icons/handovha.png" alt="" width="16" height="16" style="display:inline;vertical-align:-3px;margin-right:4px">Handovha</a> and Mail Koenig — run on one <a href="https://www.digitalocean.com"><img src="/icons/digitalocean.png" alt="" width="16" height="16" style="display:inline;vertical-align:-3px;margin-right:4px">DigitalOcean</a> droplet at the smallest tier DigitalOcean sells. No <a href="https://kubernetes.io"><img src="/icons/kubernetes.png" alt="" width="16" height="16" style="display:inline;vertical-align:-3px;margin-right:4px">Kubernetes</a>, no <a href="https://www.terraform.io"><img src="/icons/terraform.png" alt="" width="16" height="16" style="display:inline;vertical-align:-3px;margin-right:4px">Terraform</a>, no PaaS.
 
 <!--more-->
 
@@ -64,7 +64,7 @@ apps:
     rate_limited_paths: ["/login", "/domains"]
 ```
 
-Nothing about nginx, systemd, Postgres, or DNS lives anywhere else. `mail_king` has no domain yet — it's still routed through a fallback rather than sitting unreachable, which the setup script handles explicitly rather than as an edge case someone has to remember.
+Nothing about <a href="https://nginx.org"><img src="/icons/nginx.png" alt="" width="16" height="16" style="display:inline;vertical-align:-3px;margin-right:4px">nginx</a>, <a href="https://systemd.io"><img src="/icons/systemd.png" alt="" width="16" height="16" style="display:inline;vertical-align:-3px;margin-right:4px">systemd</a>, <a href="https://www.postgresql.org"><img src="/icons/postgresql.png" alt="" width="16" height="16" style="display:inline;vertical-align:-3px;margin-right:4px">Postgres</a>, or DNS lives anywhere else. `mail_king` has no domain yet — it's still routed through a fallback rather than sitting unreachable, which the setup script handles explicitly rather than as an edge case someone has to remember.
 
 {{< figure src="droplet-layout.svg" alt="One droplet: nginx routing per-app domains, hardened systemd units, one Postgres instance, a shared attached volume" >}}
 
@@ -102,7 +102,7 @@ maxretry = 5
 F2BEOF
 ```
 
-`fail2ban`'s ban time doubles on repeat offenders up to a week — a single blocked attempt costs an attacker an hour, but a scripted, repeated one gets progressively more expensive to keep retrying.
+<a href="https://launchpad.net/ufw"><img src="/icons/ufw.png" alt="" width="16" height="16" style="display:inline;vertical-align:-3px;margin-right:4px">ufw</a> locks the firewall down to just SSH and nginx's ports first; <a href="https://github.com/fail2ban/fail2ban"><img src="/icons/fail2ban.png" alt="" width="16" height="16" style="display:inline;vertical-align:-3px;margin-right:4px">fail2ban</a>'s ban time doubles on repeat offenders up to a week — a single blocked attempt costs an attacker an hour, but a scripted, repeated one gets progressively more expensive to keep retrying.
 
 ### Nginx config is generated, not hand-edited
 
@@ -127,7 +127,7 @@ server {
 }
 ```
 
-It's deliberately HTTP-only. Certbot edits the live file on the droplet in place to add the HTTPS block once DNS resolves — re-rendering this template later never wipes out certbot's work, because the template only ever describes the pre-TLS state and is never reapplied wholesale after TLS exists.
+It's deliberately HTTP-only. <a href="https://certbot.eff.org"><img src="/icons/certbot.png" alt="" width="16" height="16" style="display:inline;vertical-align:-3px;margin-right:4px">Certbot</a> edits the live file on the droplet in place to add the HTTPS block once DNS resolves — re-rendering this template later never wipes out certbot's work, because the template only ever describes the pre-TLS state and is never reapplied wholesale after TLS exists.
 
 A request to the droplet's bare IP, or any `Host` header that doesn't match a configured domain — bots and scanners routinely skip DNS and hit IPs directly — gets a dedicated catch-all instead of silently falling through to whichever `server` block nginx happens to pick first:
 
