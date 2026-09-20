@@ -13,8 +13,8 @@ images: []
 tags: ["architecture", "node.js", "postgres", "express", "system-design"]
 categories: ["projects"]
 
-featuredImage: "https://images.unsplash.com/photo-1450101499163-c8848c66ca85?w=1200&q=80"
-featuredImagePreview: "https://images.unsplash.com/photo-1450101499163-c8848c66ca85?w=600&q=80"
+featuredImage: "/images/posts/handovha-architecture.png"
+featuredImagePreview: "/images/posts/handovha-architecture.png"
 
 hiddenFromHomePage: false
 hiddenFromSearch: false

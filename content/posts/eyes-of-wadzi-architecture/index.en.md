@@ -13,8 +13,8 @@ images: []
 tags: ["architecture", "hugo", "google-drive", "github-actions", "python", "ci-cd"]
 categories: ["projects"]
 
-featuredImage: "https://images.unsplash.com/photo-1452587925148-ce544e77e70d?w=1200&q=80"
-featuredImagePreview: "https://images.unsplash.com/photo-1452587925148-ce544e77e70d?w=600&q=80"
+featuredImage: "/images/posts/eyes-of-wadzi-architecture.png"
+featuredImagePreview: "/images/posts/eyes-of-wadzi-architecture.png"
 
 hiddenFromHomePage: false
 hiddenFromSearch: false

@@ -13,8 +13,8 @@ images: []
 tags: ["architecture", "devops", "digitalocean", "bash", "system-design", "infrastructure"]
 categories: ["projects"]
 
-featuredImage: "https://images.unsplash.com/photo-1558494949-ef010cbdcc31?w=1200&q=80"
-featuredImagePreview: "https://images.unsplash.com/photo-1558494949-ef010cbdcc31?w=600&q=80"
+featuredImage: "/images/posts/digitalocean-infra-setup.png"
+featuredImagePreview: "/images/posts/digitalocean-infra-setup.png"
 
 hiddenFromHomePage: false
 hiddenFromSearch: false

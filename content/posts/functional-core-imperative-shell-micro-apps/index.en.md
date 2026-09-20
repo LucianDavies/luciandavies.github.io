@@ -13,8 +13,8 @@ images: []
 tags: ["architecture", "functional-programming", "ddd", "node.js", "system-design"]
 categories: ["projects"]
 
-featuredImage: "https://images.unsplash.com/photo-1544197150-b99a580bb7a8?w=1200&q=80"
-featuredImagePreview: "https://images.unsplash.com/photo-1544197150-b99a580bb7a8?w=600&q=80"
+featuredImage: "/images/posts/functional-core-imperative-shell-micro-apps.png"
+featuredImagePreview: "/images/posts/functional-core-imperative-shell-micro-apps.png"
 
 hiddenFromHomePage: false
 hiddenFromSearch: false

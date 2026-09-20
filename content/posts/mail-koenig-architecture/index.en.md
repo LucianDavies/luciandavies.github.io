@@ -13,8 +13,8 @@ images: []
 tags: ["architecture", "postgres", "node.js", "system-design", "queues"]
 categories: ["projects"]
 
-featuredImage: "https://images.unsplash.com/photo-1596526131083-e8c633c948d2?w=1200&q=80"
-featuredImagePreview: "https://images.unsplash.com/photo-1596526131083-e8c633c948d2?w=600&q=80"
+featuredImage: "/images/posts/mail-koenig-architecture.png"
+featuredImagePreview: "/images/posts/mail-koenig-architecture.png"
 
 hiddenFromHomePage: false
 hiddenFromSearch: false
